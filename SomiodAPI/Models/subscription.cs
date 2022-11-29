@@ -5,7 +5,7 @@ using System.Web;
 
 namespace SomiodAPI
 {
-    public class subscription
+    public class Subscription
     {
         public int Id { get; set; }
         public string Name { get; set; }
