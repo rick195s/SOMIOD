@@ -274,6 +274,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="SqlHelpers\SqlApplicationHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

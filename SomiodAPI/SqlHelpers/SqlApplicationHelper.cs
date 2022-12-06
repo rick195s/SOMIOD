@@ -12,13 +12,13 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 
-namespace AuthService
+namespace SomiodAPI
 {
 
     /// <summary>
     /// Summary description for SqlServerHelper
     /// </summary>
-    public class SqlServerHelper
+    public class SqlApplicationHelper
     {
 
         static string connectionString = SomiodAPI.Properties.Settings.Default.connStr;
@@ -31,7 +31,7 @@ namespace AuthService
              
                 SqlCommand cmd = new SqlCommand();
 
-                cmd.CommandText = "SELECT id FROM Applications where name = @name";
+                cmd.CommandText = "SELECT id FROM Application where name = @name";
                 cmd.Parameters.AddWithValue("name", application);
     
                 cmd.CommandType = CommandType.Text;
@@ -130,7 +130,7 @@ namespace AuthService
                 SqlCommand cmd = new SqlCommand();
                 SqlDataReader reader;
 
-                cmd.CommandText = "SELECT * FROM Applications";
+                cmd.CommandText = "SELECT * FROM Application";
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = sqlConnection;
                 sqlConnection.Open();
