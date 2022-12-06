@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>RESTful web service - Products App</title>
+    <meta charset="utf-8" />
+</head>
+<body>
+    <div>
+        <h2>All Products</h2>
+        <ul id="products" />
+    </div>
+    <div>
+        <h2>Search by Id</h2>
+        <input type="text" id="prodId" size="5" />
+        <input type="button" value="Search" onclick="find();" />
+        <p id="product" />
+    </div>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.4.min.js"></script>
+    <!--<script>
+        var uri = 'http://localhost:55333/api/products'; //TODO: MUST BE UPDATED
+        $(document).ready(function () {
+            $.get(uri)
+                .done(function (data) {
+                    alert(data);
+                    //ON SUCESS, 'data' contains a list of products
+                    $.each(data, function (key, item) {
+                        //ADD a list item for the product
+                        $('<li>', { text: formatItem(item) }).appendTo($('#products'));
+                    });
+                })
+                .fail(function (jqxhr, textStatus, error) {
+                    var err = textStatus + ", " + error;
+                    alert("Request failed: " + err);
+                });
+        });
+        function formatItem(item) {
+            return item.Name + ": " + item.Price + "€";
+        }
+        function find() {
+            var id = $('#prodId').val();
+            $.getJSON(uri + '/' + id)
+                .done(function (data) {
+                    $('#product').text(formatItem(data));
+                })
+                .fail(function (jqxhr, textStatus, error) {
+                    var err = textStatus2 + ", " + error;
+                    alert("request failed! : ", err);
+                });
+        } //find()
+    </script>-->
+</body>
+</html>
