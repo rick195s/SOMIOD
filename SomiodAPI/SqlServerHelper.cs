@@ -1,4 +1,5 @@
-﻿using SomiodAPI;
+﻿using Newtonsoft.Json.Linq;
+using SomiodAPI;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -30,11 +31,9 @@ namespace AuthService
              
                 SqlCommand cmd = new SqlCommand();
 
-                // attention...
                 cmd.CommandText = "SELECT id FROM Applications where name = @name";
                 cmd.Parameters.AddWithValue("name", application);
     
-
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = sqlConnection;
                 sqlConnection.Open();
@@ -53,6 +52,37 @@ namespace AuthService
             }
         }
 
+
+
+        public static int CreateApplication(Application application)
+        {
+            SqlConnection sqlConnection = new SqlConnection(connectionString);
+            try
+            {
+                SqlCommand cmd = new SqlCommand();
+
+                cmd.CommandText = "INSERT INTO Application VALUES(@Name, @Creation)";
+                cmd.Parameters.AddWithValue("@Name", application.Name);
+                cmd.Parameters.AddWithValue("@Creation", application.Creation_dt);
+
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = sqlConnection;
+                sqlConnection.Open();
+
+                int numRows = cmd.ExecuteNonQuery();
+
+                return numRows;
+            }
+            catch
+            {
+                return 0;
+            }
+            finally
+            {
+                if (sqlConnection != null)
+                    sqlConnection.Close();
+            }
+        }
 
         public static Application GetApplication(int id)
         {
