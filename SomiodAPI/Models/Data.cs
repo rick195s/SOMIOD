@@ -11,5 +11,6 @@ namespace SomiodAPI
         public string Name { get; set; }
         public string Creation_dt { get; set; }
         public int Parent { get; set; }
+        public string Res_type { get; set; }
     }
 }

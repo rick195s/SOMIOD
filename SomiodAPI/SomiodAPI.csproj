@@ -259,8 +259,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\SwaggerConfig.cs" />
-    <Compile Include="Controllers\ApplicationController.cs" />
-    <Compile Include="Controllers\ModuleController.cs" />
+    <Compile Include="Controllers\SomiodController.cs" />
     <Compile Include="Models\Application.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Models\Data.cs" />
