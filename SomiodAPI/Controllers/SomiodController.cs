@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SomiodAPI.SqlHelpers;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
@@ -114,47 +115,13 @@ namespace SomiodAPI.Controllers
         public IHttpActionResult PostSubscription_Data([FromBody] Subscription value, string applicationName, string moduleName)
         {
             SqlConnection conn = null;
-            int applicationId = 0;
             value.Parent = 0;
-            
+
+            int parentId = SqlDataHelper.getDataParent(applicationName, moduleName);
+
             try
             {
                 conn = new SqlConnection(connectionString);
-                conn.Open();
-
-                string sql2 = "SELECT * FROM Application WHERE Name=@ApplicationName";
-                SqlCommand cmd2 = new SqlCommand(sql2, conn);
-                cmd2.Parameters.AddWithValue("@ApplicationName", applicationName);
-                SqlDataReader reader = cmd2.ExecuteReader();
-                while (reader.Read())
-                {
-                    applicationId = (int)reader["Id"];
-                }
-
-                Debug.WriteLine("id aplicação: " + applicationId);
-                reader.Close();
-
-                if (applicationId == 0)
-                {
-                    return InternalServerError();
-                }
-
-                string sql3 = "SELECT * FROM Module WHERE Name=@ModuleName";
-                SqlCommand cmd3 = new SqlCommand(sql3, conn);
-                cmd3.Parameters.AddWithValue("@ModuleName", moduleName);
-                SqlDataReader reader2 = cmd3.ExecuteReader();
-                while (reader2.Read())
-                {
-                    value.Parent = (int)reader2["Id"];
-                }
-
-                Debug.WriteLine("id modulo: " + value.Parent);
-                reader2.Close();
-
-                if (value.Parent == 0)
-                {
-                    return InternalServerError();
-                }
 
                 int numRows = 0;
                 if (value.Res_type.ToLower() == "subscription") { 
@@ -162,7 +129,7 @@ namespace SomiodAPI.Controllers
                     SqlCommand cmd = new SqlCommand(sql, conn);
                     cmd.Parameters.AddWithValue("@Name", value.Name);
                     cmd.Parameters.AddWithValue("@Creation", value.Creation_dt);
-                    cmd.Parameters.AddWithValue("@Parent", value.Parent);
+                    cmd.Parameters.AddWithValue("@Parent", parentId);
                     cmd.Parameters.AddWithValue("@Event", value.Event);
                     cmd.Parameters.AddWithValue("@Endpoint", value.Endpoint);
 
@@ -173,7 +140,7 @@ namespace SomiodAPI.Controllers
                     SqlCommand cmd = new SqlCommand(sql, conn);
                     cmd.Parameters.AddWithValue("@Name", value.Name);
                     cmd.Parameters.AddWithValue("@Creation", value.Creation_dt);
-                    cmd.Parameters.AddWithValue("@Parent", value.Parent);
+                    cmd.Parameters.AddWithValue("@Parent", parentId);
 
                     numRows = cmd.ExecuteNonQuery();
                 }
@@ -278,36 +245,13 @@ namespace SomiodAPI.Controllers
         [Route("datas/{id}")]
         public IHttpActionResult DeleteData(int id)
         {
-            SqlConnection conn = null;
+            int success = SqlDataHelper.deleteData(id);
 
-            try
+            if (success == 0)
             {
-                conn = new SqlConnection(connectionString);
-                conn.Open();
-
-                string sql = "DELETE FROM Data WHERE Id=@Id";
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@Id", id);
-
-                int numRows = cmd.ExecuteNonQuery();
-                conn.Close();
-
-                if (numRows > 0)
-                {
-                    return Ok();
-                }
-                return InternalServerError();
-
-            }
-            catch (Exception)
-            {
-                //fechar a ligação à BD
-                if (conn.State == System.Data.ConnectionState.Open)
-                {
-                    conn.Close();
-                }
                 return InternalServerError();
             }
+            return Ok();
         }
 
         // DELETE: api/somiod/subscriptions/5
