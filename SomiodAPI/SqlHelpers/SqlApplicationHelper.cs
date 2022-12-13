@@ -120,9 +120,9 @@ namespace SomiodAPI
                 }
                 return null;
             }
-            catch
+            catch(Exception e)
             {
-                return null;
+                throw (e);
             }
             finally
             {

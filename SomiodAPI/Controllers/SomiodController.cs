@@ -134,14 +134,27 @@ namespace SomiodAPI.Controllers
         [Route("")]
         public IHttpActionResult PostApplication([FromBody] Application application)
         {
-            Application applicationCreated = SqlApplicationHelper.CreateApplication(application);
-
-            if (applicationCreated == null)
+            try
             {
+                Application applicationCreated = SqlApplicationHelper.CreateApplication(application);
+
+                if (applicationCreated == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(applicationCreated);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("UNIQUE"))
+                {
+                    return BadRequest("Unique Name Constraint");
+                }
+
                 return InternalServerError();
             }
-
-            return Ok(applicationCreated);
+            
         }
 
         // POST: api/somiod/Lamp
