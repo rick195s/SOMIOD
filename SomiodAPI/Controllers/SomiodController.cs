@@ -1,8 +1,10 @@
-﻿using SomiodAPI.SqlHelpers;
+﻿using SomiodAPI.Models;
+using SomiodAPI.SqlHelpers;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Reflection;
 using System.Web.Http;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -112,17 +114,24 @@ namespace SomiodAPI.Controllers
 
         // POST: api/somiod/Lamp/Light
         [Route("{applicationName}/{moduleName}")]
-        public IHttpActionResult PostSubscription_Data([FromBody] Subscription value, string applicationName, string moduleName)
+        public IHttpActionResult PostSubscription_Data([FromBody] Subscription_Data value, string applicationName, string moduleName)
         {
             SqlConnection conn = null;
-            value.Parent = 0;
+            //value.Parent = 0;
 
             int parentId = SqlDataHelper.getDataParent(applicationName, moduleName);
 
+            Debug.WriteLine("parentId: " + parentId);
+            if (parentId == 0)
+            {
+                return InternalServerError();
+            }
+
             try
             {
+                //TODO
                 conn = new SqlConnection(connectionString);
-
+                Debug.WriteLine("Res_type: " + value.Res_type);
                 int numRows = 0;
                 if (value.Res_type.ToLower() == "subscription") { 
                     string sql = "INSERT INTO Subscription VALUES(@Name, @Creation, @Parent, @Event, @Endpoint)";
@@ -134,7 +143,8 @@ namespace SomiodAPI.Controllers
                     cmd.Parameters.AddWithValue("@Endpoint", value.Endpoint);
 
                     numRows = cmd.ExecuteNonQuery();
-                } else if (value.Res_type.ToLower() == "data")
+                } 
+                else if (value.Res_type == "DATA")
                 {
                     string sql = "INSERT INTO Data VALUES(@Name, @Creation, @Parent)";
                     SqlCommand cmd = new SqlCommand(sql, conn);
@@ -143,6 +153,7 @@ namespace SomiodAPI.Controllers
                     cmd.Parameters.AddWithValue("@Parent", parentId);
 
                     numRows = cmd.ExecuteNonQuery();
+                    
                 }
 
 
