@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Web.Http;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SomiodAPI.Controllers
 {
@@ -68,39 +69,29 @@ namespace SomiodAPI.Controllers
         #region POST
         // POST: api/somiod
         [Route("")]
-        public IHttpActionResult PostApplication([FromBody] Application value)
+        public IHttpActionResult PostApplication([FromBody] Application application)
         {
-            SqlConnection conn = null;
-
             try
             {
-                conn = new SqlConnection(connectionString);
-                conn.Open();
+                Application applicationCreated = SqlApplicationHelper.CreateApplication(application);
 
-                string sql = "INSERT INTO Application VALUES(@Name, @Creation)";
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@Name", value.Name);
-                cmd.Parameters.AddWithValue("@Creation", value.Creation_dt);
-
-                int numRows = cmd.ExecuteNonQuery();
-                conn.Close();
-
-                if (numRows > 0)
+                if (applicationCreated == null)
                 {
-                    return Ok();
+                    return NotFound();
                 }
-                return InternalServerError();
 
+                return Ok(applicationCreated);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //fechar a ligação à BD
-                if (conn.State == System.Data.ConnectionState.Open)
+                if (ex.Message.Contains("UNIQUE"))
                 {
-                    conn.Close();
+                    return BadRequest("Unique Name Constraint");
                 }
+
                 return InternalServerError();
             }
+            
         }
 
         // POST: api/somiod/Lamp
@@ -211,40 +202,25 @@ namespace SomiodAPI.Controllers
         #region PUT
         // PUT: api/somiod/application/5
         [Route("applications/{id}")]
-        public IHttpActionResult PutApplication(int id, [FromBody] Application value)
+        public IHttpActionResult PutApplication(int id, [FromBody] Application application)
         {
-            SqlConnection conn = null;
-
             try
             {
-                conn = new SqlConnection(connectionString);
-                conn.Open();
+                Application applicationUpdated = SqlApplicationHelper.UpdateApplication(id, application);
 
-                string sql = "UPDATE Application SET Name=@Name, Creation_dt=@Creation WHERE Id=@Id";
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@Name", value.Name);
-                cmd.Parameters.AddWithValue("@Creation", value.Creation_dt);
-                cmd.Parameters.AddWithValue("@Id", id);
-
-                int numRows = cmd.ExecuteNonQuery();
-                conn.Close();
-
-                if (numRows > 0)
+                if (applicationUpdated == null)
                 {
-                    return Ok();
+                    return NotFound();
                 }
-                return InternalServerError();
 
+                return Ok(applicationUpdated);
             }
             catch (Exception)
             {
-                //fechar a ligação à BD
-                if (conn.State == System.Data.ConnectionState.Open)
-                {
-                    conn.Close();
-                }
                 return InternalServerError();
+
             }
+
         }
 
         // PUT: api/somiod/module/5
@@ -266,36 +242,23 @@ namespace SomiodAPI.Controllers
         [Route("applications/{id}")]
         public IHttpActionResult DeleteApplication(int id)
         {
-            SqlConnection conn = null;
-
             try
             {
-                conn = new SqlConnection(connectionString);
-                conn.Open();
+                Application application = SqlApplicationHelper.DeleteApplication(id); ;
 
-                string sql = "DELETE FROM Application WHERE Id=@Id";
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@Id", id);
-
-                int numRows = cmd.ExecuteNonQuery();
-                conn.Close();
-
-                if (numRows > 0)
+                if (application == null)
                 {
-                    return Ok();
+                    return NotFound();
                 }
-                return InternalServerError();
+                return Ok(application);
 
             }
             catch (Exception)
             {
-                //fechar a ligação à BD
-                if (conn.State == System.Data.ConnectionState.Open)
-                {
-                    conn.Close();
-                }
                 return InternalServerError();
             }
+
+            
         }
 
         // DELETE: api/somiod/module/5
