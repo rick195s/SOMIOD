@@ -249,6 +249,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\DataBaseAPI.mdf" />
+    <Content Include="App_Data\DataBaseAPI_log.ldf">
+      <DependentUpon>DataBaseAPI.mdf</DependentUpon>
+    </Content>
     <Content Include="Global.asax" />
     <Content Include="index.html" />
     <Content Include="Web.config" />
@@ -264,7 +268,7 @@
     </Compile>
     <Compile Include="Models\Module.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Models\subscription.cs" />
+    <Compile Include="Models\Subscription.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -287,9 +291,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
