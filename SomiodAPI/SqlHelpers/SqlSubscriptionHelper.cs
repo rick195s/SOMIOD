@@ -17,7 +17,7 @@ namespace SomiodAPI.SqlHelpers
         {
             SqlConnection sqlConnection = new SqlConnection(connectionString);
 
-            int parentId = getDataParent(applicationName, moduleName);
+            int parentId = SqlDataHelper.GetDataParent(applicationName, moduleName);
 
             if (parentId == 0)
             {
@@ -52,7 +52,7 @@ namespace SomiodAPI.SqlHelpers
             }
         }
 
-        public static int getDataParent(string applicationName, string moduleName)
+        public static int GetDataParent(string applicationName, string moduleName)
         {
             SqlConnection sqlConnection = new SqlConnection(connectionString);
             int moduleId = 0;
