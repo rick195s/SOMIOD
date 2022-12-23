@@ -100,47 +100,93 @@ namespace SomiodAPI.SqlHelpers
         }
 
 
-        public static int deleteData(int id)
+        public static Subscription DeleteSubscription(int id)
         {
-            SqlConnection conn = null;
+            SqlConnection sqlConnection = null;
 
             try
             {
-                conn = new SqlConnection(connectionString);
-                conn.Open();
+                sqlConnection = new SqlConnection(connectionString);
 
-                string sql = "DELETE FROM Data WHERE Id=@Id";
-                SqlCommand cmd = new SqlCommand(sql, conn);
+                SqlCommand cmd = new SqlCommand();
+
+                Subscription subscription = GetSubscription(id);
+
+                cmd.CommandText = "DELETE FROM Application WHERE Id=@Id";
                 cmd.Parameters.AddWithValue("@Id", id);
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = sqlConnection;
+                sqlConnection.Open();
 
                 int numRows = cmd.ExecuteNonQuery();
-                conn.Close();
 
-                return numRows;
-
-            }
-            catch (Exception)
-            {
-                //fechar a ligação à BD
-                if (conn.State == System.Data.ConnectionState.Open)
+                if (numRows > 0)
                 {
-                    conn.Close();
+                    return subscription;
                 }
-                return 0;
+                return null;
+
             }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            finally
+            {
+                if (sqlConnection != null)
+                    sqlConnection.Close();
+            }
+
+    
         }
 
 
-        private static Data LoadData(SqlDataReader reader)
+        public static Subscription GetSubscription(int id)
         {
-            Data data = new Data();
+            SqlConnection sqlConnection = null;
+            try
+            {
+                sqlConnection = new SqlConnection(connectionString);
+                SqlCommand cmd = new SqlCommand();
+                SqlDataReader reader;
 
-            data.Id = reader.GetSqlInt32(reader.GetOrdinal("Id")).Value;
-            data.Name = reader.GetString(reader.GetOrdinal("Name"));
-            data.Creation_dt = reader.GetString(reader.GetOrdinal("Creation_dt"));
-            data.Parent = reader.GetSqlInt32(reader.GetOrdinal("Parent")).Value;
+                // isto DEVE que ser alterado .... para usar SQLParameters
+                cmd.CommandText = "SELECT * FROM Subscription where id = @id";
+                cmd.Parameters.AddWithValue("id", id);
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = sqlConnection;
+                sqlConnection.Open();
 
-            return data;
+                reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    Subscription subscription = LoadSubscription(reader);
+                    return subscription;
+                }
+
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                if (sqlConnection != null)
+                    sqlConnection.Close();
+            }
+        }
+
+        private static Subscription LoadSubscription(SqlDataReader reader)
+        {
+            Subscription subscription = new Subscription();
+
+            subscription.Id = reader.GetSqlInt32(reader.GetOrdinal("Id")).Value;
+            subscription.Name = reader.GetString(reader.GetOrdinal("Name"));
+            subscription.Creation_dt = reader.GetString(reader.GetOrdinal("Creation_dt"));
+            subscription.Parent = reader.GetSqlInt32(reader.GetOrdinal("Parent")).Value;
+
+            return subscription;
         }
 
     }
