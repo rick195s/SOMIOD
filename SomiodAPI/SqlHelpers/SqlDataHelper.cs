@@ -15,7 +15,7 @@ namespace SomiodAPI.SqlHelpers
         static string connectionString = SomiodAPI.Properties.Settings.Default.connStr;
 
 
-        public static int CreateData(Subscription_Data data, string applicationName, string moduleName)
+        public static Data CreateData(Subscription_Data data, string applicationName, string moduleName)
         {
             SqlConnection sqlConnection = new SqlConnection(connectionString);
 
@@ -23,7 +23,7 @@ namespace SomiodAPI.SqlHelpers
 
             if (parentId == 0)
             {
-                return 0;
+                return null;
             }
 
             try
@@ -41,11 +41,15 @@ namespace SomiodAPI.SqlHelpers
                 int numRows = cmd.ExecuteNonQuery();
                 Debug.WriteLine("num rows: " + numRows);
 
-                return numRows;
+                if (numRows > 0)
+                {
+                    return GetData(data.Content);
+                }
+                return null;
             }
             catch
             {
-                return 0;
+                return null;
             }
             finally
             {
@@ -54,8 +58,77 @@ namespace SomiodAPI.SqlHelpers
             }
         }
 
+        public static Data GetData(string content)
+        {
+            SqlConnection sqlConnection = null;
+            try
+            {
+                sqlConnection = new SqlConnection(connectionString);
+                SqlCommand cmd = new SqlCommand();
+                SqlDataReader reader;
 
-        public static int DeleteData(int id)
+                cmd.CommandText = "SELECT * FROM Data where content = @Content";
+                cmd.Parameters.AddWithValue("@Content", content);
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = sqlConnection;
+                sqlConnection.Open();
+
+                reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    Data data = LoadData(reader);
+                    return data;
+                }
+
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                if (sqlConnection != null)
+                    sqlConnection.Close();
+            }
+        }
+
+        public static Data GetData(int id)
+        {
+            SqlConnection sqlConnection = null;
+            try
+            {
+                sqlConnection = new SqlConnection(connectionString);
+                SqlCommand cmd = new SqlCommand();
+                SqlDataReader reader;
+
+                cmd.CommandText = "SELECT * FROM Data where id = @id";
+                cmd.Parameters.AddWithValue("id", id);
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = sqlConnection;
+                sqlConnection.Open();
+
+                reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    Data data = LoadData(reader);
+                    return data;
+                }
+
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                if (sqlConnection != null)
+                    sqlConnection.Close();
+            }
+        }
+
+        public static Data DeleteData(int id)
         {
             SqlConnection conn = null;
 
@@ -64,6 +137,8 @@ namespace SomiodAPI.SqlHelpers
                 conn = new SqlConnection(connectionString);
                 conn.Open();
 
+                Data data = GetData(id);
+
                 string sql = "DELETE FROM Data WHERE Id=@Id";
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@Id", id);
@@ -71,7 +146,11 @@ namespace SomiodAPI.SqlHelpers
                 int numRows = cmd.ExecuteNonQuery();
                 conn.Close();
 
-                return numRows;
+                if (numRows > 0)
+                {
+                    return data;
+                }
+                return null;
 
             }
             catch (Exception)
@@ -81,12 +160,11 @@ namespace SomiodAPI.SqlHelpers
                 {
                     conn.Close();
                 }
-                return 0;
+                return null;
             }
         }
 
 
-        //TODO - apagar (?)
         private static Data LoadData(SqlDataReader reader)
         {
             Data data = new Data();

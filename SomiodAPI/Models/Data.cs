@@ -28,6 +28,6 @@ namespace SomiodAPI
         public string Content { get; set; }
         public string Creation_dt { get; set; }
         public int Parent { get; set; }
-        public string Res_type { get; set;}
+        public string Res_type { get; set; } = "data";
     }
 }

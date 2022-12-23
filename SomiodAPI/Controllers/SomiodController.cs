@@ -102,13 +102,13 @@ namespace SomiodAPI.Controllers
         public IHttpActionResult PostModule([FromBody] Module value, string applicationName)
         {
 
-            int success = SqlModuleHelper.CreateModule(value, applicationName);
+            Module module = SqlModuleHelper.CreateModule(value, applicationName);
 
-            if (success == 0)
+            if (module == null)
             {
                 return InternalServerError();
             }
-            return Ok();
+            return Ok(module);
             
         }
 
@@ -116,22 +116,34 @@ namespace SomiodAPI.Controllers
         [Route("{applicationName}/{moduleName}")]
         public IHttpActionResult PostSubscription_Data([FromBody] Subscription_Data value, string applicationName, string moduleName)
         {
-            int success = 0;
+            Data data = null;
+            Subscription subscription = null;
+            bool rest_typeData = false;
 
             if (value.Res_type.ToUpper() == "DATA")
             {
-                success = SqlDataHelper.CreateData(value, applicationName, moduleName);
-            }
-            if (value.Res_type.ToUpper() == "SUBSCRIPTION")
-            {
-                success = SqlSubscriptionHelper.CreateSubscription(value, applicationName, moduleName);
+                data = SqlDataHelper.CreateData(value, applicationName, moduleName);
+                rest_typeData = true;
             }
 
-            if (success == 0)
+            if (value.Res_type.ToUpper() == "SUBSCRIPTION")
+            {
+                subscription = SqlSubscriptionHelper.CreateSubscription(value, applicationName, moduleName);
+            }
+
+            if (data == null && subscription == null)
             {
                 return InternalServerError();
             }
-            return Ok();
+            //TODO - arranjar alguma maneira para devolver quando é Data e quando é Subscription
+            //return rest_typeData ? Ok(data) : Ok(subscription);
+            
+            if (rest_typeData)
+            {
+                return Ok(data);
+            }
+            return Ok(subscription);
+
         }
         #endregion
 
@@ -163,13 +175,13 @@ namespace SomiodAPI.Controllers
         [Route("modules/{id}")]
         public IHttpActionResult PutModule(int id, [FromBody] Module value)
         {
-            int success = SqlModuleHelper.updateModule(value, id);
+            Module module = SqlModuleHelper.UpdateModule(value, id);
 
-            if (success == 0)
+            if (module == null)
             {
                 return InternalServerError();
             }
-            return Ok();
+            return Ok(module);
         }
         #endregion
 
@@ -201,26 +213,26 @@ namespace SomiodAPI.Controllers
         [Route("modules/{id}")]
         public IHttpActionResult DeleteModule(int id)
         {
-            int success = SqlModuleHelper.deleteModule(id);
+            Module module = SqlModuleHelper.DeleteModule(id);
 
-            if (success == 0)
+            if (module == null)
             {
                 return InternalServerError();
             }
-            return Ok();
+            return Ok(module);
         }
 
         // DELETE: api/somiod/datas/5
         [Route("datas/{id}")]
         public IHttpActionResult DeleteData(int id)
         {
-            int success = SqlDataHelper.DeleteData(id);
+            Data data = SqlDataHelper.DeleteData(id);
 
-            if (success == 0)
+            if (data == null)
             {
                 return InternalServerError();
             }
-            return Ok();
+            return Ok(data);
         }
 
         // DELETE: api/somiod/subscriptions/5

@@ -14,7 +14,7 @@ namespace SomiodAPI.SqlHelpers
         static string connectionString = SomiodAPI.Properties.Settings.Default.connStr;
 
 
-        public static int CreateSubscription(Subscription_Data subscription, string applicationName, string moduleName)
+        public static Subscription CreateSubscription(Subscription_Data subscription, string applicationName, string moduleName)
         {
             SqlConnection sqlConnection = new SqlConnection(connectionString);
 
@@ -22,7 +22,7 @@ namespace SomiodAPI.SqlHelpers
 
             if (parentId == 0)
             {
-                return 0;
+                return null;
             }
 
             try
@@ -42,11 +42,16 @@ namespace SomiodAPI.SqlHelpers
 
                 int numRows = cmd.ExecuteNonQuery();
 
-                return numRows;
+                if (numRows > 0)
+                {
+                    return GetSubscription(subscription.Name);
+                }
+
+                return null;
             }
             catch
             {
-                return 0;
+                return null;
             }
             finally
             {
@@ -59,7 +64,7 @@ namespace SomiodAPI.SqlHelpers
         {
             SqlConnection sqlConnection = new SqlConnection(connectionString);
             int moduleId = 0;
-            int applicationId = SqlModuleHelper.getModuleParent(applicationName);
+            int applicationId = SqlModuleHelper.GetModuleParent(applicationName);
 
             if (applicationId == 0)
             {
@@ -113,7 +118,7 @@ namespace SomiodAPI.SqlHelpers
 
                 Subscription subscription = GetSubscription(id);
 
-                cmd.CommandText = "DELETE FROM Application WHERE Id=@Id";
+                cmd.CommandText = "DELETE FROM Subscription WHERE Id=@Id";
                 cmd.Parameters.AddWithValue("@Id", id);
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = sqlConnection;
@@ -142,8 +147,41 @@ namespace SomiodAPI.SqlHelpers
         }
 
 
+        public static Subscription GetSubscription(string name)
+        {
+            SqlConnection sqlConnection = null;
+            try
+            {
+                sqlConnection = new SqlConnection(connectionString);
+                SqlCommand cmd = new SqlCommand();
+                SqlDataReader reader;
 
-      
+                cmd.CommandText = "SELECT * FROM Subscription where name = @Name";
+                cmd.Parameters.AddWithValue("@Name", name);
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = sqlConnection;
+                sqlConnection.Open();
+
+                reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    Subscription subscription = LoadSubscription(reader);
+                    return subscription;
+                }
+
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                if (sqlConnection != null)
+                    sqlConnection.Close();
+            }
+        }
+
         public static Subscription GetSubscription(int id)
         {
             SqlConnection sqlConnection = null;
@@ -188,6 +226,8 @@ namespace SomiodAPI.SqlHelpers
             subscription.Name = reader.GetString(reader.GetOrdinal("Name"));
             subscription.Creation_dt = reader.GetString(reader.GetOrdinal("Creation_dt"));
             subscription.Parent = reader.GetSqlInt32(reader.GetOrdinal("Parent")).Value;
+            subscription.Event = reader.GetString(reader.GetOrdinal("Event"));
+            subscription.Endpoint = reader.GetString(reader.GetOrdinal("EndPoint"));
 
             return subscription;
         }

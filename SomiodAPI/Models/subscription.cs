@@ -29,8 +29,8 @@ namespace SomiodAPI
         public string Name { get; set; }
         public string Creation_dt { get; set; }
         public int Parent { get; set; }
-        public string Event { get; set; }
+        public string Event { get; set; } = "creation";
         public string Endpoint { get; set; }
-        public string Res_type { get; set; }
+        public string Res_type { get; set; } = "subscription";
     }
 }

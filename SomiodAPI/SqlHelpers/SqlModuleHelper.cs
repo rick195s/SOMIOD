@@ -26,14 +26,14 @@ namespace SomiodAPI
         static string connectionString = SomiodAPI.Properties.Settings.Default.connStr;
 
 
-        public static int CreateModule(Module module, string applicationName)
+        public static Module CreateModule(Module module, string applicationName)
         {
             SqlConnection sqlConnection = new SqlConnection(connectionString);
-            int parentId = getModuleParent(applicationName);
+            int parentId = GetModuleParent(applicationName);
 
             if (parentId == 0)
             {
-                return 0;
+                return null;
             }
 
             try
@@ -50,12 +50,16 @@ namespace SomiodAPI
                 sqlConnection.Open();
 
                 int numRows = cmd.ExecuteNonQuery();
+                if (numRows > 0)
+                {
+                    return GetModule(module.Name);
+                }
 
-                return numRows;
+                return null;
             }
             catch
             {
-                return 0;
+                return null;
             }
             finally
             {
@@ -64,7 +68,7 @@ namespace SomiodAPI
             }
         }
 
-        public static int getModuleParent(string applicationName)
+        public static int GetModuleParent(string applicationName)
         {
             SqlConnection sqlConnection = new SqlConnection(connectionString);
             int applicationId = 0;
@@ -139,6 +143,41 @@ namespace SomiodAPI
             }
         }
 
+        public static Module GetModule(string name)
+        {
+            SqlConnection sqlConnection = null;
+            try
+            {
+                sqlConnection = new SqlConnection(connectionString);
+                SqlCommand cmd = new SqlCommand();
+                SqlDataReader reader;
+
+                cmd.CommandText = "SELECT * FROM Module where name = @Name";
+                cmd.Parameters.AddWithValue("@Name", name);
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = sqlConnection;
+                sqlConnection.Open();
+
+                reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    Module module = LoadModule(reader);
+                    return module;
+                }
+
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                if (sqlConnection != null)
+                    sqlConnection.Close();
+            }
+        }
+
         public static List<Module> GetModules()
         {
             List<Module> modules = new List<Module>();
@@ -173,38 +212,44 @@ namespace SomiodAPI
             }
         }
 
-        public static int updateModule(Module module, int id)
+        public static Module UpdateModule(Module module, int id)
         {
-            SqlConnection conn = null;
+            SqlConnection conn = new SqlConnection(connectionString);
 
             try
             {
-                conn = new SqlConnection(connectionString);
-                conn.Open();
 
                 string sql = "UPDATE Module SET Name=@Name WHERE Id=@Id";
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@Name", module.Name);
                 cmd.Parameters.AddWithValue("@Id", id);
 
-                int numRows = cmd.ExecuteNonQuery();
-                conn.Close();
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = conn;
+                conn.Open();
 
-                return numRows;
+                int numRows = cmd.ExecuteNonQuery();
+
+                if (numRows > 0)
+                {
+                    return GetModule(module.Name);
+                }
+
+                return null;
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //fechar a ligação à BD
-                if (conn.State == System.Data.ConnectionState.Open)
-                {
+                throw e;
+            }
+            finally
+            {
+                if (conn != null)
                     conn.Close();
-                }
-                return 0;
             }
         }
 
-        public static int deleteModule(int id)
+        public static Module DeleteModule(int id)
         {
             SqlConnection conn = null;
 
@@ -212,6 +257,8 @@ namespace SomiodAPI
             {
                 conn = new SqlConnection(connectionString);
                 conn.Open();
+
+                Module module = GetModule(id);
 
                 string sql = "DELETE FROM Module WHERE Id=@Id";
                 SqlCommand cmd = new SqlCommand(sql, conn);
@@ -220,7 +267,12 @@ namespace SomiodAPI
                 int numRows = cmd.ExecuteNonQuery();
                 conn.Close();
 
-                return numRows;
+                if (numRows > 0)
+                {
+                    return module;
+                }
+
+                return null;
 
             }
             catch (Exception)
@@ -230,7 +282,7 @@ namespace SomiodAPI
                 {
                     conn.Close();
                 }
-                return 0;
+                return null;
             }
         }
             
