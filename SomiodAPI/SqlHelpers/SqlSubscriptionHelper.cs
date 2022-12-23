@@ -5,6 +5,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Web;
+using SomiodAPI.Models;
 
 namespace SomiodAPI.SqlHelpers
 {
@@ -13,11 +14,11 @@ namespace SomiodAPI.SqlHelpers
         static string connectionString = SomiodAPI.Properties.Settings.Default.connStr;
 
 
-        public static int CreateData(Data data, string applicationName, string moduleName)
+        public static int CreateSubscription(Subscription_Data subscription, string applicationName, string moduleName)
         {
             SqlConnection sqlConnection = new SqlConnection(connectionString);
 
-            int parentId = getDataParent(applicationName, moduleName);
+            int parentId = GetParent(applicationName, moduleName);
 
             if (parentId == 0)
             {
@@ -28,10 +29,12 @@ namespace SomiodAPI.SqlHelpers
             {
                 SqlCommand cmd = new SqlCommand();
 
-                cmd.CommandText = "INSERT INTO Data VALUES(@Name, @Creation, @Parent)";
-                cmd.Parameters.AddWithValue("@Name", data.Name);
-                cmd.Parameters.AddWithValue("@Creation", data.Creation_dt);
+                cmd.CommandText = "INSERT INTO Subscription VALUES(@Name, @Creation, @Parent, @Event, @Endpoint)";
+                cmd.Parameters.AddWithValue("@Name", subscription.Name);
+                cmd.Parameters.AddWithValue("@Creation", subscription.Creation_dt);
                 cmd.Parameters.AddWithValue("@Parent", parentId);
+                cmd.Parameters.AddWithValue("@Event", subscription.Event);
+                cmd.Parameters.AddWithValue("@Endpoint", subscription.Endpoint);
 
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = sqlConnection;
@@ -52,7 +55,7 @@ namespace SomiodAPI.SqlHelpers
             }
         }
 
-        public static int GetDataParent(string applicationName, string moduleName)
+        public static int GetParent(string applicationName, string moduleName)
         {
             SqlConnection sqlConnection = new SqlConnection(connectionString);
             int moduleId = 0;
@@ -99,8 +102,7 @@ namespace SomiodAPI.SqlHelpers
             }
         }
 
-
-        public static int DeleteData(int id)
+        public static int DeleteSubscription(int id)
         {
             SqlConnection conn = null;
 
@@ -109,7 +111,7 @@ namespace SomiodAPI.SqlHelpers
                 conn = new SqlConnection(connectionString);
                 conn.Open();
 
-                string sql = "DELETE FROM Data WHERE Id=@Id";
+                string sql = "DELETE FROM Subscription WHERE Id=@Id";
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@Id", id);
 
@@ -131,12 +133,13 @@ namespace SomiodAPI.SqlHelpers
         }
 
 
+        //TODO - apagar (?)
         private static Data LoadData(SqlDataReader reader)
         {
             Data data = new Data();
 
             data.Id = reader.GetSqlInt32(reader.GetOrdinal("Id")).Value;
-            data.Name = reader.GetString(reader.GetOrdinal("Name"));
+            data.Content = reader.GetString(reader.GetOrdinal("Content"));
             data.Creation_dt = reader.GetString(reader.GetOrdinal("Creation_dt"));
             data.Parent = reader.GetSqlInt32(reader.GetOrdinal("Parent")).Value;
 
