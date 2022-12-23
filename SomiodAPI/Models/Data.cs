@@ -26,9 +26,7 @@ namespace SomiodAPI
 
         public int Id { get; set; }
         public string Content { get; set; }
-
-        //TODO - uma vez que isto está no modelo Subscrition_Data penso que aqui não faça muito
-        public string Creation_dt { get; set; } = DateTime.Now.ToString("yyyy/MM/dd H:mm:ss");
+        public string Creation_dt { get; set; }
         public int Parent { get; set; }
         public string Res_type { get; set;}
     }

@@ -227,13 +227,13 @@ namespace SomiodAPI.Controllers
         [Route("subscriptions/{id}")]
         public IHttpActionResult DeleteSubscriptions(int id)
         {
-            int success = SqlSubscriptionHelper.DeleteSubscription(id);
+            Subscription subscription = SqlSubscriptionHelper.DeleteSubscription(id);
 
-            if (success == 0)
+            if (subscription == null)
             {
                 return InternalServerError();
             }
-            return Ok();
+            return Ok(subscription);
         }
         #endregion
     }

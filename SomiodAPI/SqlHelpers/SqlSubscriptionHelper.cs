@@ -18,11 +18,7 @@ namespace SomiodAPI.SqlHelpers
         {
             SqlConnection sqlConnection = new SqlConnection(connectionString);
 
-<<<<<<< HEAD
             int parentId = GetParent(applicationName, moduleName);
-=======
-            int parentId = SqlDataHelper.GetDataParent(applicationName, moduleName);
->>>>>>> 1637257cbe06a94af7f5c2c4d3d48e49802ff07e
 
             if (parentId == 0)
             {
@@ -105,13 +101,7 @@ namespace SomiodAPI.SqlHelpers
                 return 0;
             }
         }
-
-<<<<<<< HEAD
-        public static int DeleteSubscription(int id)
-=======
-
         public static Subscription DeleteSubscription(int id)
->>>>>>> 1637257cbe06a94af7f5c2c4d3d48e49802ff07e
         {
             SqlConnection sqlConnection = null;
 
@@ -119,16 +109,11 @@ namespace SomiodAPI.SqlHelpers
             {
                 sqlConnection = new SqlConnection(connectionString);
 
-<<<<<<< HEAD
-                string sql = "DELETE FROM Subscription WHERE Id=@Id";
-                SqlCommand cmd = new SqlCommand(sql, conn);
-=======
                 SqlCommand cmd = new SqlCommand();
 
                 Subscription subscription = GetSubscription(id);
 
                 cmd.CommandText = "DELETE FROM Application WHERE Id=@Id";
->>>>>>> 1637257cbe06a94af7f5c2c4d3d48e49802ff07e
                 cmd.Parameters.AddWithValue("@Id", id);
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = sqlConnection;
@@ -157,12 +142,9 @@ namespace SomiodAPI.SqlHelpers
         }
 
 
-<<<<<<< HEAD
-        //TODO - apagar (?)
-        private static Data LoadData(SqlDataReader reader)
-=======
+
+      
         public static Subscription GetSubscription(int id)
->>>>>>> 1637257cbe06a94af7f5c2c4d3d48e49802ff07e
         {
             SqlConnection sqlConnection = null;
             try
@@ -171,19 +153,12 @@ namespace SomiodAPI.SqlHelpers
                 SqlCommand cmd = new SqlCommand();
                 SqlDataReader reader;
 
-<<<<<<< HEAD
-            data.Id = reader.GetSqlInt32(reader.GetOrdinal("Id")).Value;
-            data.Content = reader.GetString(reader.GetOrdinal("Content"));
-            data.Creation_dt = reader.GetString(reader.GetOrdinal("Creation_dt"));
-            data.Parent = reader.GetSqlInt32(reader.GetOrdinal("Parent")).Value;
-=======
                 // isto DEVE que ser alterado .... para usar SQLParameters
                 cmd.CommandText = "SELECT * FROM Subscription where id = @id";
                 cmd.Parameters.AddWithValue("id", id);
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = sqlConnection;
                 sqlConnection.Open();
->>>>>>> 1637257cbe06a94af7f5c2c4d3d48e49802ff07e
 
                 reader = cmd.ExecuteReader();
                 if (reader.Read())
