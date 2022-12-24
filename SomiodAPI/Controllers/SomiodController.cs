@@ -116,34 +116,25 @@ namespace SomiodAPI.Controllers
         [Route("{applicationName}/{moduleName}")]
         public IHttpActionResult PostSubscription_Data([FromBody] Subscription_Data value, string applicationName, string moduleName)
         {
-            Data data = null;
-            Subscription subscription = null;
-            bool rest_typeData = false;
-
-            if (value.Res_type.ToUpper() == "DATA")
+            if (value?.Res_type.ToUpper() == "DATA")
             {
-                data = SqlDataHelper.CreateData(value, applicationName, moduleName);
-                rest_typeData = true;
-            }
-
-            if (value.Res_type.ToUpper() == "SUBSCRIPTION")
-            {
-                subscription = SqlSubscriptionHelper.CreateSubscription(value, applicationName, moduleName);
-            }
-
-            if (data == null && subscription == null)
-            {
-                return InternalServerError();
-            }
-            //TODO - arranjar alguma maneira para devolver quando é Data e quando é Subscription
-            //return rest_typeData ? Ok(data) : Ok(subscription);
-            
-            if (rest_typeData)
-            {
+                Data data = SqlDataHelper.CreateData(value, applicationName, moduleName);
+                if (data == null){
+                    return InternalServerError();
+                }
                 return Ok(data);
             }
-            return Ok(subscription);
 
+            if (value?.Res_type.ToUpper() == "SUBSCRIPTION")
+            {
+                Subscription subscription = SqlSubscriptionHelper.CreateSubscription(value, applicationName, moduleName);
+                if (subscription == null){
+                    return InternalServerError();
+                }
+                return Ok(subscription);
+            }
+
+            return BadRequest("Res_type not recognized");
         }
         #endregion
 
