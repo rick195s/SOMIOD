@@ -263,6 +263,7 @@
   <ItemGroup>
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="Controllers\SomiodController.cs" />
+    <Compile Include="Helpers\MosquittoHelper.cs" />
     <Compile Include="Models\Application.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Models\Data.cs" />
