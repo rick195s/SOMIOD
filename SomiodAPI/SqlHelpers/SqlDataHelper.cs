@@ -5,6 +5,8 @@ using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Web;
+using SomiodAPI.Models;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SomiodAPI.SqlHelpers
 {
@@ -13,23 +15,22 @@ namespace SomiodAPI.SqlHelpers
         static string connectionString = SomiodAPI.Properties.Settings.Default.connStr;
 
 
-        public static int CreateData(Data data, string applicationName, string moduleName)
+        public static Data CreateData(Subscription_Data data, string applicationName, string moduleName)
         {
             SqlConnection sqlConnection = new SqlConnection(connectionString);
 
-            int parentId = GetDataParent(applicationName, moduleName);
+            int parentId = SqlSubscriptionHelper.GetParent(applicationName, moduleName);
 
             if (parentId == 0)
             {
-                return 0;
+                return null;
             }
 
             try
             {
                 SqlCommand cmd = new SqlCommand();
-
-                cmd.CommandText = "INSERT INTO Data VALUES(@Name, @Creation, @Parent)";
-                cmd.Parameters.AddWithValue("@Name", data.Name);
+                cmd.CommandText = "INSERT INTO Data VALUES(@Content, @Creation, @Parent)";
+                cmd.Parameters.AddWithValue("@Content", data.Content);
                 cmd.Parameters.AddWithValue("@Creation", data.Creation_dt);
                 cmd.Parameters.AddWithValue("@Parent", parentId);
 
@@ -38,12 +39,17 @@ namespace SomiodAPI.SqlHelpers
                 sqlConnection.Open();
 
                 int numRows = cmd.ExecuteNonQuery();
+                Debug.WriteLine("num rows: " + numRows);
 
-                return numRows;
+                if (numRows > 0)
+                {
+                    return GetData(data.Content);
+                }
+                return null;
             }
             catch
             {
-                return 0;
+                return null;
             }
             finally
             {
@@ -52,55 +58,77 @@ namespace SomiodAPI.SqlHelpers
             }
         }
 
-        public static int GetDataParent(string applicationName, string moduleName)
+        public static Data GetData(string content)
         {
-            SqlConnection sqlConnection = new SqlConnection(connectionString);
-            int moduleId = 0;
-            int applicationId = SqlModuleHelper.getModuleParent(applicationName);
-
-            if (applicationId == 0)
-            {
-                return 0;
-            }
-            
-
+            SqlConnection sqlConnection = null;
             try
             {
+                sqlConnection = new SqlConnection(connectionString);
+                SqlCommand cmd = new SqlCommand();
+                SqlDataReader reader;
+
+                cmd.CommandText = "SELECT * FROM Data where content = @Content";
+                cmd.Parameters.AddWithValue("@Content", content);
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = sqlConnection;
                 sqlConnection.Open();
 
-                string sql = "SELECT * FROM Module WHERE Name=@ModuleName";
-                SqlCommand cmd = new SqlCommand(sql, sqlConnection);
-                cmd.Parameters.AddWithValue("@ModuleName", moduleName);
-                SqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
+                reader = cmd.ExecuteReader();
+                if (reader.Read())
                 {
-                    moduleId = (int)reader["Id"];
+                    Data data = LoadData(reader);
+                    return data;
                 }
 
-                Debug.WriteLine("id do modulo: " + moduleId);
-                reader.Close();
-
-                if (moduleId == 0)
-                {
-                    return 0;
-                }
-
-                return moduleId;
-
+                return null;
             }
-            catch (Exception)
+            catch
             {
-                //fechar a ligação à BD
-                if (sqlConnection.State == System.Data.ConnectionState.Open)
-                {
+                return null;
+            }
+            finally
+            {
+                if (sqlConnection != null)
                     sqlConnection.Close();
-                }
-                return 0;
             }
         }
 
+        public static Data GetData(int id)
+        {
+            SqlConnection sqlConnection = null;
+            try
+            {
+                sqlConnection = new SqlConnection(connectionString);
+                SqlCommand cmd = new SqlCommand();
+                SqlDataReader reader;
 
-        public static int DeleteData(int id)
+                cmd.CommandText = "SELECT * FROM Data where id = @id";
+                cmd.Parameters.AddWithValue("id", id);
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = sqlConnection;
+                sqlConnection.Open();
+
+                reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    Data data = LoadData(reader);
+                    return data;
+                }
+
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                if (sqlConnection != null)
+                    sqlConnection.Close();
+            }
+        }
+
+        public static Data DeleteData(int id)
         {
             SqlConnection conn = null;
 
@@ -109,6 +137,8 @@ namespace SomiodAPI.SqlHelpers
                 conn = new SqlConnection(connectionString);
                 conn.Open();
 
+                Data data = GetData(id);
+
                 string sql = "DELETE FROM Data WHERE Id=@Id";
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@Id", id);
@@ -116,7 +146,11 @@ namespace SomiodAPI.SqlHelpers
                 int numRows = cmd.ExecuteNonQuery();
                 conn.Close();
 
-                return numRows;
+                if (numRows > 0)
+                {
+                    return data;
+                }
+                return null;
 
             }
             catch (Exception)
@@ -126,7 +160,7 @@ namespace SomiodAPI.SqlHelpers
                 {
                     conn.Close();
                 }
-                return 0;
+                return null;
             }
         }
 
@@ -136,7 +170,7 @@ namespace SomiodAPI.SqlHelpers
             Data data = new Data();
 
             data.Id = reader.GetSqlInt32(reader.GetOrdinal("Id")).Value;
-            data.Name = reader.GetString(reader.GetOrdinal("Name"));
+            data.Content = reader.GetString(reader.GetOrdinal("Content"));
             data.Creation_dt = reader.GetString(reader.GetOrdinal("Creation_dt"));
             data.Parent = reader.GetSqlInt32(reader.GetOrdinal("Parent")).Value;
 

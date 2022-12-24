@@ -102,13 +102,13 @@ namespace SomiodAPI.Controllers
         public IHttpActionResult PostModule([FromBody] Module value, string applicationName)
         {
 
-            int success = SqlModuleHelper.CreateModule(value, applicationName);
+            Module module = SqlModuleHelper.CreateModule(value, applicationName);
 
-            if (success == 0)
+            if (module == null)
             {
                 return InternalServerError();
             }
-            return Ok();
+            return Ok(module);
             
         }
 
@@ -116,64 +116,34 @@ namespace SomiodAPI.Controllers
         [Route("{applicationName}/{moduleName}")]
         public IHttpActionResult PostSubscription_Data([FromBody] Subscription_Data value, string applicationName, string moduleName)
         {
-            SqlConnection conn = null;
-            //value.Parent = 0;
+            Data data = null;
+            Subscription subscription = null;
+            bool rest_typeData = false;
 
-            int parentId = SqlDataHelper.GetDataParent(applicationName, moduleName);
+            if (value.Res_type.ToUpper() == "DATA")
+            {
+                data = SqlDataHelper.CreateData(value, applicationName, moduleName);
+                rest_typeData = true;
+            }
 
-            Debug.WriteLine("parentId: " + parentId);
-            if (parentId == 0)
+            if (value.Res_type.ToUpper() == "SUBSCRIPTION")
+            {
+                subscription = SqlSubscriptionHelper.CreateSubscription(value, applicationName, moduleName);
+            }
+
+            if (data == null && subscription == null)
             {
                 return InternalServerError();
             }
-
-            try
+            //TODO - arranjar alguma maneira para devolver quando é Data e quando é Subscription
+            //return rest_typeData ? Ok(data) : Ok(subscription);
+            
+            if (rest_typeData)
             {
-                //TODO
-                conn = new SqlConnection(connectionString);
-                Debug.WriteLine("Res_type: " + value.Res_type);
-                int numRows = 0;
-                if (value.Res_type.ToLower() == "subscription") { 
-                    string sql = "INSERT INTO Subscription VALUES(@Name, @Creation, @Parent, @Event, @Endpoint)";
-                    SqlCommand cmd = new SqlCommand(sql, conn);
-                    cmd.Parameters.AddWithValue("@Name", value.Name);
-                    cmd.Parameters.AddWithValue("@Creation", value.Creation_dt);
-                    cmd.Parameters.AddWithValue("@Parent", parentId);
-                    cmd.Parameters.AddWithValue("@Event", value.Event);
-                    cmd.Parameters.AddWithValue("@Endpoint", value.Endpoint);
-
-                    numRows = cmd.ExecuteNonQuery();
-                } 
-                else if (value.Res_type == "DATA")
-                {
-                    string sql = "INSERT INTO Data VALUES(@Name, @Creation, @Parent)";
-                    SqlCommand cmd = new SqlCommand(sql, conn);
-                    cmd.Parameters.AddWithValue("@Name", value.Name);
-                    cmd.Parameters.AddWithValue("@Creation", value.Creation_dt);
-                    cmd.Parameters.AddWithValue("@Parent", parentId);
-
-                    numRows = cmd.ExecuteNonQuery();
-                    
-                }
-
-
-                conn.Close();
-                if (numRows > 0)
-                {
-                    return Ok();
-                }
-                return InternalServerError();
-
+                return Ok(data);
             }
-            catch (Exception)
-            {
-                //fechar a ligação à BD
-                if (conn.State == System.Data.ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-                return InternalServerError();
-            }
+            return Ok(subscription);
+
         }
         #endregion
 
@@ -205,13 +175,13 @@ namespace SomiodAPI.Controllers
         [Route("modules/{id}")]
         public IHttpActionResult PutModule(int id, [FromBody] Module value)
         {
-            int success = SqlModuleHelper.updateModule(value, id);
+            Module module = SqlModuleHelper.UpdateModule(value, id);
 
-            if (success == 0)
+            if (module == null)
             {
                 return InternalServerError();
             }
-            return Ok();
+            return Ok(module);
         }
         #endregion
 
@@ -243,62 +213,39 @@ namespace SomiodAPI.Controllers
         [Route("modules/{id}")]
         public IHttpActionResult DeleteModule(int id)
         {
-            int success = SqlModuleHelper.deleteModule(id);
+            Module module = SqlModuleHelper.DeleteModule(id);
 
-            if (success == 0)
+            if (module == null)
             {
                 return InternalServerError();
             }
-            return Ok();
+            return Ok(module);
         }
 
         // DELETE: api/somiod/datas/5
         [Route("datas/{id}")]
         public IHttpActionResult DeleteData(int id)
         {
-            int success = SqlDataHelper.deleteData(id);
+            Data data = SqlDataHelper.DeleteData(id);
 
-            if (success == 0)
+            if (data == null)
             {
                 return InternalServerError();
             }
-            return Ok();
+            return Ok(data);
         }
 
         // DELETE: api/somiod/subscriptions/5
         [Route("subscriptions/{id}")]
         public IHttpActionResult DeleteSubscriptions(int id)
         {
-            SqlConnection conn = null;
+            Subscription subscription = SqlSubscriptionHelper.DeleteSubscription(id);
 
-            try
+            if (subscription == null)
             {
-                conn = new SqlConnection(connectionString);
-                conn.Open();
-
-                string sql = "DELETE FROM Subscription WHERE Id=@Id";
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@Id", id);
-
-                int numRows = cmd.ExecuteNonQuery();
-                conn.Close();
-
-                if (numRows > 0)
-                {
-                    return Ok();
-                }
-                return InternalServerError();
-
-            }
-            catch (Exception)
-            {
-                //fechar a ligação à BD
-                if (conn.State == System.Data.ConnectionState.Open)
-                {
-                    conn.Close();
-                }
                 return InternalServerError();
             }
+            return Ok(subscription);
         }
         #endregion
     }
