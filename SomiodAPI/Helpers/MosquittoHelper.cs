@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Web;
 using uPLibrary.Networking.M2Mqtt;
 
@@ -21,6 +22,7 @@ namespace SomiodAPI.Helpers
             {
                 throw new Exception("Error connecting to message broker...");
             }
+            mClient.Publish(channelName, Encoding.UTF8.GetBytes(data.Content.ToString()));
             return 0;
         }
     }

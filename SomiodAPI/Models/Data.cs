@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace SomiodAPI
 {
@@ -18,7 +20,7 @@ namespace SomiodAPI
         public Data(Subscription_Data subscription_Data)
         {
             Id = subscription_Data.Id;
-            Content = subscription_Data.Content;
+            Content = subscription_Data.Content.OuterXml;
             Creation_dt = subscription_Data.Creation_dt;
             Parent = subscription_Data.Parent;
             Res_type = subscription_Data.Res_type;

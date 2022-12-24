@@ -14,7 +14,7 @@ namespace SomiodAPI.SqlHelpers
         static string connectionString = SomiodAPI.Properties.Settings.Default.connStr;
 
 
-        public static Subscription CreateSubscription(Subscription_Data subscription, string applicationName, string moduleName)
+        public static Subscription CreateSubscription(Subscription subscription, string applicationName, string moduleName)
         {
             SqlConnection sqlConnection = new SqlConnection(connectionString);
 

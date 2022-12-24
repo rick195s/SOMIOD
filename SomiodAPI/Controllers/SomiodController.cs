@@ -1,12 +1,11 @@
-﻿using SomiodAPI.Models;
+﻿using SomiodAPI.Helpers;
+using SomiodAPI.Models;
 using SomiodAPI.SqlHelpers;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Diagnostics;
-using System.Reflection;
+using System.Net;
+using System.Threading.Tasks;
 using System.Web.Http;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace SomiodAPI.Controllers
 {
@@ -116,18 +115,21 @@ namespace SomiodAPI.Controllers
         [Route("{applicationName}/{moduleName}")]
         public IHttpActionResult PostSubscription_Data([FromBody] Subscription_Data value, string applicationName, string moduleName)
         {
+            
             if (value?.Res_type.ToUpper() == "DATA")
             {
-                Data data = SqlDataHelper.CreateData(value, applicationName, moduleName);
+                Data data = SqlDataHelper.CreateData(new Data(value), applicationName, moduleName);
                 if (data == null){
                     return InternalServerError();
                 }
+
+                MosquittoHelper.PublishData(Dns.GetHostAddresses("test.mosquitto.org")[0], moduleName, data);
                 return Ok(data);
             }
 
             if (value?.Res_type.ToUpper() == "SUBSCRIPTION")
             {
-                Subscription subscription = SqlSubscriptionHelper.CreateSubscription(value, applicationName, moduleName);
+                Subscription subscription = SqlSubscriptionHelper.CreateSubscription(new Subscription(value), applicationName, moduleName);
                 if (subscription == null){
                     return InternalServerError();
                 }

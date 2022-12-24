@@ -7,6 +7,7 @@ using System.Linq;
 using System.Web;
 using SomiodAPI.Models;
 using static System.Net.Mime.MediaTypeNames;
+using System.Xml;
 
 namespace SomiodAPI.SqlHelpers
 {
@@ -15,7 +16,7 @@ namespace SomiodAPI.SqlHelpers
         static string connectionString = SomiodAPI.Properties.Settings.Default.connStr;
 
 
-        public static Data CreateData(Subscription_Data data, string applicationName, string moduleName)
+        public static Data CreateData(Data data, string applicationName, string moduleName)
         {
             SqlConnection sqlConnection = new SqlConnection(connectionString);
 
