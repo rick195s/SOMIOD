@@ -8,6 +8,7 @@ using System.Web;
 using SomiodAPI.Models;
 using static System.Net.Mime.MediaTypeNames;
 using System.Xml;
+using System.Net.Configuration;
 
 namespace SomiodAPI.SqlHelpers
 {
@@ -82,6 +83,41 @@ namespace SomiodAPI.SqlHelpers
                 }
 
                 return null;
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                if (sqlConnection != null)
+                    sqlConnection.Close();
+            }
+        }
+
+        public static List<Data> GetDatas(int parent)
+        {
+            List<Data> datas = new List<Data>();
+            SqlConnection sqlConnection = null;
+            try
+            {
+                sqlConnection = new SqlConnection(connectionString);
+                SqlCommand cmd = new SqlCommand();
+                SqlDataReader reader;
+
+                cmd.CommandText = "SELECT * FROM Data WHERE parent = @Parent";
+                cmd.Parameters.AddWithValue("@Parent", parent);
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = sqlConnection;
+                sqlConnection.Open();
+
+                reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    Data data = LoadData(reader);
+                    datas.Add(data);
+                }
+                return datas;
             }
             catch
             {

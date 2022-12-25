@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using SomiodAPI;
+using SomiodAPI.SqlHelpers;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -285,7 +286,7 @@ namespace SomiodAPI
                 return null;
             }
         }
-            
+
 
         private static Module LoadModule(SqlDataReader reader)
         {
@@ -295,7 +296,9 @@ namespace SomiodAPI
             module.Name = reader.GetString(reader.GetOrdinal("Name"));
             module.Creation_dt = reader.GetString(reader.GetOrdinal("Creation_dt"));
             module.Parent = reader.GetSqlInt32(reader.GetOrdinal("Parent")).Value;
-            
+
+            module.data = SqlDataHelper.GetDatas(module.Id);
+
             return module;
         }
 
