@@ -15,7 +15,7 @@ namespace SomiodAPI.Models
         public XmlDocument Content { get; set; }
         public string Creation_dt { get; set; } = DateTime.Now.ToString("yyyy/MM/dd H:mm:ss"); 
         public int Parent { get; set; }
-        public string Event { get; set; } = "CREATION";
+        public string Event { get; set; } = "creation";
         public string Endpoint { get; set; }
         public string Res_type { get; set; }
     }
