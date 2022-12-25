@@ -60,6 +60,7 @@
             this.btnCreateApplication.TabIndex = 1;
             this.btnCreateApplication.Text = "Create";
             this.btnCreateApplication.UseVisualStyleBackColor = true;
+            this.btnCreateApplication.Click += new System.EventHandler(this.btnCreateApplication_Click);
             // 
             // Form1
             // 
