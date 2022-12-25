@@ -5,7 +5,7 @@ using System.Web;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace ApplicationA
+namespace ApplicationA.Models
 {
     public class Data
     {
