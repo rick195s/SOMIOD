@@ -8,11 +8,7 @@ namespace SomiodAPI
 {
     public class Subscription
     {
-        public Subscription()
-        {
-            //TODO - penso que isto tenha de ir par ao construtor quando recebe o res_type do Subscription_Data
-            this.Res_type = this.Res_type.ToUpper() ?? "SUBSCRIPTION";
-        }
+        public Subscription() { }
 
         public Subscription(Subscription_Data subscription_Data)
         {

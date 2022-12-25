@@ -20,7 +20,7 @@ namespace SomiodAPI.SqlHelpers
 
             int parentId = GetParent(applicationName, moduleName);
 
-            if (parentId == 0)
+            if (parentId == 0 || (!subscription.Event.ToLower().Contains("creation") && !subscription.Event.ToLower().Contains("deletion")))
             {
                 return null;
             }

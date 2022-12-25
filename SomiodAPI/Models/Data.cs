@@ -10,17 +10,12 @@ namespace SomiodAPI
 {
     public class Data
     {
-
-        public Data()
-        {
-            //TODO - penso que isto tenha de ir par ao construtor quando recebe o res_type do Subscription_Data
-            this.Res_type = this.Res_type.ToUpper() ?? "DATA";
-        }
+        public Data() { }
 
         public Data(Subscription_Data subscription_Data)
         {
             Id = subscription_Data.Id;
-            if (subscription_Data.Content.FirstChild != null)
+            if (subscription_Data.Content != null)
             {
                 Content = subscription_Data.Content.FirstChild.InnerXml;
                 Content = Content.Trim();
