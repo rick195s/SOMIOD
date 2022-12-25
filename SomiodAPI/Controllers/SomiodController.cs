@@ -116,6 +116,11 @@ namespace SomiodAPI.Controllers
         public IHttpActionResult PostSubscription_Data([FromBody] Subscription_Data value, string applicationName, string moduleName)
         {
             
+            if (value == null)
+            {
+                return BadRequest("Error deserializing object");
+            }
+
             if (value?.Res_type.ToUpper() == "DATA")
             {
                 Data data = SqlDataHelper.CreateData(new Data(value), applicationName, moduleName);
