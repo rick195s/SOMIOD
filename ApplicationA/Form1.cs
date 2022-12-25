@@ -21,8 +21,9 @@ namespace ApplicationA
         {
             InitializeComponent();
             client = new RestClient(baseURI);
+            populateApplicationsList();
         }
-
+    
         private void btnCreateApplication_Click(object sender, EventArgs e)
         {
             var request = new RestRequest("/", Method.Post);
@@ -36,6 +37,44 @@ namespace ApplicationA
 
             RestResponse response = client.Execute(request);
             MessageBox.Show(response.StatusCode.ToString());
+            populateApplicationsList();
         }
+
+        private void btnCreateModule_Click(object sender, EventArgs e)
+        {
+            Models.Application selectedApplication = (Models.Application) applicationsList.SelectedItem;
+
+            if (selectedApplication == null)
+            {
+                return;
+            }
+            var request = new RestRequest("/" + selectedApplication.Name, Method.Post);
+            Models.Module module = new Models.Module
+            {
+                Name = textBoxModuleName.Text,
+            };
+
+            request.RequestFormat = DataFormat.Xml;
+            request.AddXmlBody(module);
+
+            RestResponse response = client.Execute(request);
+            MessageBox.Show(response.StatusCode.ToString());
+            populateApplicationsList();
+        }
+
+        private void populateApplicationsList()
+        {
+            var request = new RestRequest("/applications", Method.Get);
+            request.RequestFormat = DataFormat.Xml;
+            
+            List<Models.Application> response = client.Execute<List<Models.Application>>(request).Data;
+
+            applicationsList.Items.Clear();
+            foreach (Models.Application application in response)
+            {
+                applicationsList.Items.Add(application);
+            }
+        }
+
     }
 }
