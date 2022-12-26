@@ -37,15 +37,17 @@
             this.textBoxModuleName = new System.Windows.Forms.TextBox();
             this.applicationsList = new System.Windows.Forms.ListBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.btnCreateSub = new System.Windows.Forms.Button();
-            this.textBoxEndpoint = new System.Windows.Forms.TextBox();
-            this.modulesList = new System.Windows.Forms.ListBox();
-            this.checkedListBoxSubType = new System.Windows.Forms.CheckedListBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this.textBoxSubName = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.checkedListBoxSubType = new System.Windows.Forms.CheckedListBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.textBoxEndpoint = new System.Windows.Forms.TextBox();
+            this.btnCreateSub = new System.Windows.Forms.Button();
+            this.modulesList = new System.Windows.Forms.ListBox();
+            this.listBoxReceivedMsg = new System.Windows.Forms.ListBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -140,19 +142,68 @@
             this.groupBox3.Controls.Add(this.modulesList);
             this.groupBox3.Location = new System.Drawing.Point(304, 12);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(497, 250);
+            this.groupBox3.Size = new System.Drawing.Size(471, 304);
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Subscription";
+            // 
+            // textBoxSubName
+            // 
+            this.textBoxSubName.Location = new System.Drawing.Point(209, 222);
+            this.textBoxSubName.Name = "textBoxSubName";
+            this.textBoxSubName.Size = new System.Drawing.Size(151, 22);
+            this.textBoxSubName.TabIndex = 8;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(206, 193);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(68, 16);
+            this.label5.TabIndex = 7;
+            this.label5.Text = "Sub name";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(206, 129);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(60, 16);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "Endpoint";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(206, 32);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(66, 16);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "Sub Type";
+            // 
+            // checkedListBoxSubType
+            // 
+            this.checkedListBoxSubType.FormattingEnabled = true;
+            this.checkedListBoxSubType.Location = new System.Drawing.Point(209, 54);
+            this.checkedListBoxSubType.Name = "checkedListBoxSubType";
+            this.checkedListBoxSubType.Size = new System.Drawing.Size(134, 55);
+            this.checkedListBoxSubType.TabIndex = 5;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(7, 32);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(65, 20);
+            this.label2.Size = new System.Drawing.Size(52, 16);
             this.label2.TabIndex = 3;
             this.label2.Text = "Module";
+            // 
+            // textBoxEndpoint
+            // 
+            this.textBoxEndpoint.Location = new System.Drawing.Point(209, 154);
+            this.textBoxEndpoint.Name = "textBoxEndpoint";
+            this.textBoxEndpoint.Size = new System.Drawing.Size(151, 22);
+            this.textBoxEndpoint.TabIndex = 1;
             // 
             // btnCreateSub
             // 
@@ -164,13 +215,6 @@
             this.btnCreateSub.UseVisualStyleBackColor = true;
             this.btnCreateSub.Click += new System.EventHandler(this.btnCreateSub_Click);
             // 
-            // textBoxEndpoint
-            // 
-            this.textBoxEndpoint.Location = new System.Drawing.Point(209, 154);
-            this.textBoxEndpoint.Name = "textBoxEndpoint";
-            this.textBoxEndpoint.Size = new System.Drawing.Size(151, 22);
-            this.textBoxEndpoint.TabIndex = 1;
-            // 
             // modulesList
             // 
             this.modulesList.FormattingEnabled = true;
@@ -180,53 +224,31 @@
             this.modulesList.Size = new System.Drawing.Size(169, 100);
             this.modulesList.TabIndex = 0;
             // 
-            // checkedListBoxSubType
+            // listBoxReceivedMsg
             // 
-            this.checkedListBoxSubType.FormattingEnabled = true;
-            this.checkedListBoxSubType.Location = new System.Drawing.Point(209, 54);
-            this.checkedListBoxSubType.Name = "checkedListBoxSubType";
-            this.checkedListBoxSubType.Size = new System.Drawing.Size(134, 55);
-            this.checkedListBoxSubType.TabIndex = 5;
+            this.listBoxReceivedMsg.FormattingEnabled = true;
+            this.listBoxReceivedMsg.ItemHeight = 16;
+            this.listBoxReceivedMsg.Location = new System.Drawing.Point(781, 33);
+            this.listBoxReceivedMsg.Name = "listBoxReceivedMsg";
+            this.listBoxReceivedMsg.Size = new System.Drawing.Size(220, 276);
+            this.listBoxReceivedMsg.TabIndex = 5;
             // 
-            // label3
+            // label6
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(206, 32);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(83, 20);
-            this.label3.TabIndex = 5;
-            this.label3.Text = "Sub Type";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(206, 129);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(60, 16);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Endpoint";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(206, 193);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(85, 20);
-            this.label5.TabIndex = 7;
-            this.label5.Text = "Sub name";
-            // 
-            // textBoxSubName
-            // 
-            this.textBoxSubName.Location = new System.Drawing.Point(209, 222);
-            this.textBoxSubName.Name = "textBoxSubName";
-            this.textBoxSubName.Size = new System.Drawing.Size(151, 22);
-            this.textBoxSubName.TabIndex = 8;
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(781, 12);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(133, 16);
+            this.label6.TabIndex = 6;
+            this.label6.Text = "ReceveidMessages:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1031, 339);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.listBoxReceivedMsg);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -239,6 +261,7 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -262,6 +285,8 @@
         private System.Windows.Forms.CheckedListBox checkedListBoxSubType;
         private System.Windows.Forms.TextBox textBoxSubName;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ListBox listBoxReceivedMsg;
+        private System.Windows.Forms.Label label6;
     }
 }
 

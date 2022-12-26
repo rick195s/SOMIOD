@@ -30,3 +30,5 @@ D:\Dev\IPL\IntegracaoSistemas\SOMIOD\ApplicationA\obj\Debug\ApplicationA.csproj.
 D:\Dev\IPL\IntegracaoSistemas\SOMIOD\ApplicationA\obj\Debug\ApplicationA.csproj.CopyComplete
 D:\Dev\IPL\IntegracaoSistemas\SOMIOD\ApplicationA\obj\Debug\ApplicationA.exe
 D:\Dev\IPL\IntegracaoSistemas\SOMIOD\ApplicationA\obj\Debug\ApplicationA.pdb
+D:\Dev\IPL\IntegracaoSistemas\SOMIOD\ApplicationA\bin\Debug\M2Mqtt.Net.dll
+D:\Dev\IPL\IntegracaoSistemas\SOMIOD\ApplicationA\bin\Debug\M2Mqtt.Net.pdb

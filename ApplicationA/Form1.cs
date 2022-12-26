@@ -2,7 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing.Text;
+using System.Net;
+using System.Text;
 using System.Windows.Forms;
+using uPLibrary.Networking.M2Mqtt;
+using uPLibrary.Networking.M2Mqtt.Messages;
 
 namespace ApplicationA
 {
@@ -19,6 +23,9 @@ namespace ApplicationA
             "creation",
             "deletion"
         };
+
+        private MqttClient mClient;
+        private string[] mStrTopics = { };
 
         public Form1()
         {
@@ -108,8 +115,58 @@ namespace ApplicationA
                 };
 
                 RestResponse response = CreateSubscription(subscription, application.Name, selectedModule.Name);
+                if (!response.IsSuccessful)
+                {
+                    MessageBox.Show("Error subscribing to " + type);
+                    return;
+                }
                 MessageBox.Show(response.StatusCode.ToString());
+                connectToBroker(selectedModule.Name, subscription.Endpoint);
+
             }
+
+        }
+
+        private void connectToBroker(string channelName, string endpoint)
+        {
+
+            try
+            {
+                //IPAddress ipAddress = IPAddress.Parse(endpoint);
+                mClient = new MqttClient(Dns.GetHostAddresses("test.mosquitto.org")[0]);
+                mClient.Connect(Guid.NewGuid().ToString());
+                if (!mClient.IsConnected)
+                {
+                    MessageBox.Show("Error connecting to message broker...");
+                    return;
+                }
+
+                
+
+                mClient.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
+                mStrTopics = new List<string>(mStrTopics) { channelName }.ToArray();
+
+                List<byte> qosLevels = new List<byte>();
+                foreach (string topics in mStrTopics)
+                {
+                    qosLevels.Add(MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE);
+                }
+                mClient.Subscribe(mStrTopics, qosLevels.ToArray());
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Error connecting to broker");
+                return;
+            }
+        }
+        
+        private void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
+        {
+            listBoxReceivedMsg.BeginInvoke((MethodInvoker)delegate
+            {
+                listBoxReceivedMsg.Items.Add("Received = " + Encoding.UTF8.GetString(e.Message) + " on topic " +
+        e.Topic);
+            });
 
         }
 
