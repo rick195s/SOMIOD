@@ -70,7 +70,7 @@ namespace ApplicationA
 
             RestResponse response = client.Execute(request);
             MessageBox.Show(response.StatusCode.ToString());
-            populateApplicationsList();
+            populateModulesList();
         }
 
 
