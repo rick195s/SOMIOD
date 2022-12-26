@@ -13,5 +13,10 @@ namespace ApplicationA.Models
         public int Parent { get; set; }
         public string Res_type { get; set; } = "module";
         public List<Data> data { get; set; } = new List<Data>();
+
+        override public string ToString()
+        {
+            return Name;
+        }
     }
 }

@@ -22,6 +22,7 @@ namespace ApplicationA
             InitializeComponent();
             client = new RestClient(baseURI);
             populateApplicationsList();
+            populateModulesList();
         }
     
         private void btnCreateApplication_Click(object sender, EventArgs e)
@@ -76,5 +77,18 @@ namespace ApplicationA
             }
         }
 
+        private void populateModulesList()
+        {
+            var request = new RestRequest("/modules", Method.Get);
+            request.RequestFormat = DataFormat.Xml;
+
+            List<Models.Module> response = client.Execute<List<Models.Module>>(request).Data;
+
+            modulesList.Items.Clear();
+            foreach (Models.Module module in response)
+            {
+                modulesList.Items.Add(module);
+            }
+        }
     }
 }
