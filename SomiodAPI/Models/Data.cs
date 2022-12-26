@@ -15,7 +15,7 @@ namespace SomiodAPI
         public Data(Subscription_Data subscription_Data)
         {
             Id = subscription_Data.Id;
-            if (subscription_Data.Content != null)
+            if (subscription_Data.Content.FirstChild != null)
             {
                 Content = subscription_Data.Content.FirstChild.InnerXml;
                 Content = Content.Trim();

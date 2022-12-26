@@ -44,6 +44,8 @@
             this.checkedListBoxSubType = new System.Windows.Forms.CheckedListBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.textBoxSubName = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -127,6 +129,8 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.textBoxSubName);
+            this.groupBox3.Controls.Add(this.label5);
             this.groupBox3.Controls.Add(this.label4);
             this.groupBox3.Controls.Add(this.label3);
             this.groupBox3.Controls.Add(this.checkedListBoxSubType);
@@ -136,7 +140,7 @@
             this.groupBox3.Controls.Add(this.modulesList);
             this.groupBox3.Location = new System.Drawing.Point(304, 12);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(465, 179);
+            this.groupBox3.Size = new System.Drawing.Size(497, 250);
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Subscription";
@@ -152,16 +156,17 @@
             // 
             // btnCreateSub
             // 
-            this.btnCreateSub.Location = new System.Drawing.Point(384, 132);
+            this.btnCreateSub.Location = new System.Drawing.Point(384, 153);
             this.btnCreateSub.Name = "btnCreateSub";
             this.btnCreateSub.Size = new System.Drawing.Size(75, 23);
             this.btnCreateSub.TabIndex = 2;
             this.btnCreateSub.Text = "Create";
             this.btnCreateSub.UseVisualStyleBackColor = true;
+            this.btnCreateSub.Click += new System.EventHandler(this.btnCreateSub_Click);
             // 
             // textBoxEndpoint
             // 
-            this.textBoxEndpoint.Location = new System.Drawing.Point(209, 132);
+            this.textBoxEndpoint.Location = new System.Drawing.Point(209, 154);
             this.textBoxEndpoint.Name = "textBoxEndpoint";
             this.textBoxEndpoint.Size = new System.Drawing.Size(151, 22);
             this.textBoxEndpoint.TabIndex = 1;
@@ -180,7 +185,7 @@
             this.checkedListBoxSubType.FormattingEnabled = true;
             this.checkedListBoxSubType.Location = new System.Drawing.Point(209, 54);
             this.checkedListBoxSubType.Name = "checkedListBoxSubType";
-            this.checkedListBoxSubType.Size = new System.Drawing.Size(134, 38);
+            this.checkedListBoxSubType.Size = new System.Drawing.Size(134, 55);
             this.checkedListBoxSubType.TabIndex = 5;
             // 
             // label3
@@ -195,11 +200,27 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(206, 107);
+            this.label4.Location = new System.Drawing.Point(206, 129);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(75, 20);
+            this.label4.Size = new System.Drawing.Size(60, 16);
             this.label4.TabIndex = 6;
             this.label4.Text = "Endpoint";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(206, 193);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(85, 20);
+            this.label5.TabIndex = 7;
+            this.label5.Text = "Sub name";
+            // 
+            // textBoxSubName
+            // 
+            this.textBoxSubName.Location = new System.Drawing.Point(209, 222);
+            this.textBoxSubName.Name = "textBoxSubName";
+            this.textBoxSubName.Size = new System.Drawing.Size(151, 22);
+            this.textBoxSubName.TabIndex = 8;
             // 
             // Form1
             // 
@@ -239,6 +260,8 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckedListBox checkedListBoxSubType;
+        private System.Windows.Forms.TextBox textBoxSubName;
+        private System.Windows.Forms.Label label5;
     }
 }
 

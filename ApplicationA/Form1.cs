@@ -1,12 +1,7 @@
 ﻿using RestSharp;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Drawing.Text;
 using System.Windows.Forms;
 
 namespace ApplicationA
@@ -17,12 +12,27 @@ namespace ApplicationA
         string baseURI = @"http://localhost:55390/api/somiod"; //TODO: needs to be updated!
         RestClient client = null;
 
+        private List<Models.Application> applications = new List<Models.Application>();
+        private List<Models.Module> modules = new List<Models.Module>();
+        private string[] subType =
+        {
+            "creation",
+            "deletion"
+        };
+
         public Form1()
         {
             InitializeComponent();
             client = new RestClient(baseURI);
+
+           
             populateApplicationsList();
             populateModulesList();
+
+            foreach (string type in subType)
+            {
+                checkedListBoxSubType.Items.Add(type);
+            }
         }
     
         private void btnCreateApplication_Click(object sender, EventArgs e)
@@ -63,18 +73,76 @@ namespace ApplicationA
             populateApplicationsList();
         }
 
+
+        private void btnCreateSub_Click(object sender, EventArgs e)
+        {
+            if (checkedListBoxSubType.CheckedItems.Count == 0)
+            {
+                MessageBox.Show("You need to selected at least one sub type");
+                return;
+            }
+
+            Models.Module selectedModule = (Models.Module)modulesList.SelectedItem;
+
+            if (selectedModule == null)
+            {
+                MessageBox.Show("You need to selected one Module to subscribe");
+                return;
+            }
+
+            Models.Application application = GetModuleApplication(selectedModule.Parent);
+            if (application == null)
+            {
+                MessageBox.Show("No application related to module found");
+                return;
+            }
+
+            foreach (string type in checkedListBoxSubType.CheckedItems)
+            {
+                Models.Subscription_Data subscription = new Models.Subscription_Data
+                {
+                    Name = textBoxSubName.Text,
+                    Endpoint = textBoxEndpoint.Text,
+                    Event = type,
+                    Res_type = "subscription"
+                };
+
+                RestResponse response = CreateSubscription(subscription, application.Name, selectedModule.Name);
+                MessageBox.Show(response.StatusCode.ToString());
+            }
+
+        }
+
+        private RestResponse CreateSubscription(Models.Subscription_Data subscription, string applicationName, string moduleName)
+        {
+            var request = new RestRequest("/" + applicationName + "/" + moduleName, Method.Post);
+            request.RequestFormat = DataFormat.Xml;
+            request.AddXmlBody(subscription);
+
+            return client.Execute(request);
+        }
+
+        private Models.Application GetModuleApplication(int parentId)
+        {
+            foreach (Models.Application application in applications)
+            {
+                if (application.Id == parentId)
+                {
+                    return application;
+                }
+            }
+
+            return null;
+        }
+
         private void populateApplicationsList()
         {
             var request = new RestRequest("/applications", Method.Get);
             request.RequestFormat = DataFormat.Xml;
             
             List<Models.Application> response = client.Execute<List<Models.Application>>(request).Data;
-
-            applicationsList.Items.Clear();
-            foreach (Models.Application application in response)
-            {
-                applicationsList.Items.Add(application);
-            }
+            applications = response;
+            applicationsList.DataSource = applications;
         }
 
         private void populateModulesList()
@@ -83,12 +151,8 @@ namespace ApplicationA
             request.RequestFormat = DataFormat.Xml;
 
             List<Models.Module> response = client.Execute<List<Models.Module>>(request).Data;
-
-            modulesList.Items.Clear();
-            foreach (Models.Module module in response)
-            {
-                modulesList.Items.Add(module);
-            }
+            modules = response;
+            modulesList.DataSource = modules;
         }
     }
 }
