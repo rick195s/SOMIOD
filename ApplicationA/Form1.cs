@@ -132,8 +132,9 @@ namespace ApplicationA
 
             try
             {
-                //IPAddress ipAddress = IPAddress.Parse(endpoint);
-                mClient = new MqttClient(Dns.GetHostAddresses("test.mosquitto.org")[0]);
+                // Dns.GetHostAddresses("test.mosquitto.org")[0]
+                endpoint = endpoint.Substring(endpoint.LastIndexOf('/') + 1);
+                mClient = new MqttClient(IPAddress.Parse(endpoint));
                 mClient.Connect(Guid.NewGuid().ToString());
                 if (!mClient.IsConnected)
                 {
