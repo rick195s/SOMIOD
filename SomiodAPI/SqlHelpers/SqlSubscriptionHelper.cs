@@ -25,6 +25,11 @@ namespace SomiodAPI.SqlHelpers
                 return null;
             }
 
+            if (VerifySubscriptionName(subscription.Name, parentId))
+            {
+                return null;
+            }
+
             try
             {
                 SqlCommand cmd = new SqlCommand();
@@ -60,6 +65,40 @@ namespace SomiodAPI.SqlHelpers
             }
         }
 
+        public static bool VerifySubscriptionName(string name, int parentId)
+        {
+            SqlConnection sqlConnection = null;
+            try
+            {
+                sqlConnection = new SqlConnection(connectionString);
+                SqlCommand cmd = new SqlCommand();
+                SqlDataReader reader;
+
+                cmd.CommandText = "SELECT * FROM Subscription where name = @Name AND parent = @ParentId";
+                cmd.Parameters.AddWithValue("@Name", name);
+                cmd.Parameters.AddWithValue("@ParentId", parentId);
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = sqlConnection;
+                sqlConnection.Open();
+
+                reader = cmd.ExecuteReader();
+                if (!reader.Read())
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch
+            {
+                return true;
+            }
+            finally
+            {
+                if (sqlConnection != null)
+                    sqlConnection.Close();
+            }
+        }
         public static int GetParent(string applicationName, string moduleName)
         {
             SqlConnection sqlConnection = new SqlConnection(connectionString);
