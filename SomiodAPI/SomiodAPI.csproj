@@ -264,16 +264,16 @@
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="Controllers\SomiodController.cs" />
     <Compile Include="Helpers\MosquittoHelper.cs" />
-    <Compile Include="Models\Application.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Models\Data.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Application.cs" />
+    <Compile Include="Models\Data.cs" />
     <Compile Include="Models\Module.cs" />
+    <Compile Include="Models\subscription.cs" />
     <Compile Include="Models\Subscription_Data.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Models\Subscription.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -283,7 +283,6 @@
     <Compile Include="SqlHelpers\SqlDataHelper.cs" />
     <Compile Include="SqlHelpers\SqlModuleHelper.cs" />
     <Compile Include="SqlHelpers\SqlApplicationHelper.cs" />
-    <Compile Include="SqlHelpers\SqlSubscriptionHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
