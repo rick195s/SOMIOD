@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SomiodAPI", "SomiodAPI\Somi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApplicationA", "ApplicationA\ApplicationA.csproj", "{9082C13B-7DDF-436C-A4CA-A44B72973522}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApplicationB", "ApplicationB\ApplicationB.csproj", "{FDEBA72B-48BD-4D6F-9F8E-541D06E045AD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{9082C13B-7DDF-436C-A4CA-A44B72973522}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9082C13B-7DDF-436C-A4CA-A44B72973522}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9082C13B-7DDF-436C-A4CA-A44B72973522}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDEBA72B-48BD-4D6F-9F8E-541D06E045AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDEBA72B-48BD-4D6F-9F8E-541D06E045AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDEBA72B-48BD-4D6F-9F8E-541D06E045AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDEBA72B-48BD-4D6F-9F8E-541D06E045AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
