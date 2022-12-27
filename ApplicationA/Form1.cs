@@ -175,7 +175,7 @@ namespace ApplicationA
 
             listBoxReceivedMsg.BeginInvoke((MethodInvoker)delegate
             {
-                listBoxReceivedMsg.Items.Add("Received = " + data.Content + " event "+data.Event+" on topic " +
+                listBoxReceivedMsg.Items.Add("Received = " + data.Content + " " + data.Event + " on topic " +
         e.Topic);
             });
 

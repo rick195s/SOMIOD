@@ -58,7 +58,7 @@ namespace SomiodAPI.Controllers
         [Route("modules/{id}")]
         public IHttpActionResult GetModule(int id)
         {
-            Module module = SqlModuleHelper.GetModule(id);
+            Module module = SqlModuleHelper.GetModule(id, true);
 
             if (module == null)
             {
@@ -215,7 +215,7 @@ namespace SomiodAPI.Controllers
 
             if (module == null)
             {
-                return InternalServerError();
+                return NotFound();
             }
             return Ok(module);
         }
@@ -228,8 +228,12 @@ namespace SomiodAPI.Controllers
 
             if (data == null)
             {
-                return InternalServerError();
+                return NotFound();
             }
+
+            string moduleName = SqlModuleHelper.GetModule(data.Parent).Name;
+
+            MosquittoHelper.PublishData(IPAddress.Parse("127.0.0.1"), "deletion", moduleName, data);
             return Ok(data);
         }
 
@@ -241,7 +245,7 @@ namespace SomiodAPI.Controllers
 
             if (subscription == null)
             {
-                return InternalServerError();
+                return NotFound();
             }
             return Ok(subscription);
         }
