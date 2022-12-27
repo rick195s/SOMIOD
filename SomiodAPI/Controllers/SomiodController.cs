@@ -128,7 +128,7 @@ namespace SomiodAPI.Controllers
                     return InternalServerError();
                 }
 
-                MosquittoHelper.PublishData(IPAddress.Parse("127.0.0.1"), moduleName, data);
+                MosquittoHelper.PublishData(IPAddress.Parse("127.0.0.1"), "creation", moduleName, data);
                 return Ok(data);
             }
 

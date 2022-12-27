@@ -33,6 +33,10 @@ namespace SomiodAPI
 
         public int Id { get; set; }
         public string Content { get; set; } = "";
+
+        [XmlAttribute("event")]
+        public string Event { get; set; }
+
         public string Creation_dt { get; set; }
         public int Parent { get; set; }
         public string Res_type { get; set; } = "data";
