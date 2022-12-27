@@ -231,6 +231,41 @@ namespace SomiodAPI.SqlHelpers
 
             return subscription;
         }
+        public static List<Subscription> GetSubscriptions(int parent)
+        {
+            SqlConnection sqlConnection = null;
+            try
+            {
+                sqlConnection = new SqlConnection(connectionString);
+                SqlCommand cmd = new SqlCommand();
+                SqlDataReader reader;
 
-    }
+                cmd.CommandText = "SELECT * FROM Subscription where Parent=@parent";
+                cmd.Parameters.AddWithValue("@parent", parent);
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = sqlConnection;
+                sqlConnection.Open();
+
+                reader = cmd.ExecuteReader();
+                List<Subscription> subscriptions = new List<Subscription>();
+                while (reader.Read())
+                {
+                    Subscription subscription = LoadSubscription(reader);
+                    subscriptions.Add(subscription);
+                }
+
+                return subscriptions;
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                if (sqlConnection != null)
+                    sqlConnection.Close();
+            }
+        }
+
+        }
 }
