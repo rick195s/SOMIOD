@@ -30,6 +30,11 @@ namespace SomiodAPI.SqlHelpers
 
             try
             {
+                Data checkExists = GetData(data.Content, parentId);
+                if (checkExists != null)
+                {
+                    return checkExists;
+                }
                 SqlCommand cmd = new SqlCommand();
                 cmd.CommandText = "INSERT INTO Data VALUES(@Content, @Creation, @Parent)";
                 cmd.Parameters.AddWithValue("@Content", data.Content);
@@ -45,7 +50,7 @@ namespace SomiodAPI.SqlHelpers
 
                 if (numRows > 0)
                 {
-                    return GetData(data.Content);
+                    return GetData(data.Content, parentId);
                 }
                 return null;
             }
@@ -60,7 +65,7 @@ namespace SomiodAPI.SqlHelpers
             }
         }
 
-        public static Data GetData(string content)
+        public static Data GetData(string content, int parentId)
         {
             SqlConnection sqlConnection = null;
             try
@@ -69,8 +74,9 @@ namespace SomiodAPI.SqlHelpers
                 SqlCommand cmd = new SqlCommand();
                 SqlDataReader reader;
 
-                cmd.CommandText = "SELECT * FROM Data where content = @Content";
+                cmd.CommandText = "SELECT * FROM Data where content = @Content and parent = @Parent";
                 cmd.Parameters.AddWithValue("@Content", content);
+                cmd.Parameters.AddWithValue("@Parent", parentId);
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = sqlConnection;
                 sqlConnection.Open();
