@@ -109,7 +109,7 @@ namespace SomiodAPI
             }         
         }
 
-        public static Module GetModule(int id)
+        public static Module GetModule(int id, bool loadDatas = false)
         {
             SqlConnection sqlConnection = null;
             try
@@ -127,7 +127,7 @@ namespace SomiodAPI
                 reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
-                    Module module = LoadModule(reader);
+                    Module module = LoadModule(reader, loadDatas);
                     return module;
                 }
 
@@ -144,7 +144,7 @@ namespace SomiodAPI
             }
         }
 
-        public static Module GetModule(string name)
+        public static Module GetModule(string name, bool loadDatas = false)
         {
             SqlConnection sqlConnection = null;
             try
@@ -162,7 +162,7 @@ namespace SomiodAPI
                 reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
-                    Module module = LoadModule(reader);
+                    Module module = LoadModule(reader, loadDatas);
                     return module;
                 }
 
@@ -288,7 +288,7 @@ namespace SomiodAPI
         }
 
 
-        private static Module LoadModule(SqlDataReader reader)
+        private static Module LoadModule(SqlDataReader reader, bool loadDatas = false)
         {
             Module module = new Module();
 
@@ -297,7 +297,10 @@ namespace SomiodAPI
             module.Creation_dt = reader.GetString(reader.GetOrdinal("Creation_dt"));
             module.Parent = reader.GetSqlInt32(reader.GetOrdinal("Parent")).Value;
 
-            module.data = SqlDataHelper.GetDatas(module.Id);
+            if (loadDatas)
+            {
+                module.data = SqlDataHelper.GetDatas(module.Id);
+            }
 
             return module;
         }
