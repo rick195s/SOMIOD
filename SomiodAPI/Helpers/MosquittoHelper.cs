@@ -29,8 +29,8 @@ namespace SomiodAPI.Helpers
             }
 
             data.Event = subEvent;
-
             mClient.Publish(channelName, Encoding.UTF8.GetBytes(serializeObjectToXML(data)));
+            data.Event = null;
             return 0;
         }
 
@@ -42,8 +42,10 @@ namespace SomiodAPI.Helpers
             serializer.Serialize(ms, obj);
             ms.Position = 0;
 
-            StreamReader r = new StreamReader(ms);
-            return r.ReadToEnd();
+            using (StreamReader r = new StreamReader(ms))
+            {
+                return r.ReadToEnd();
+            };
         }
     }
 }

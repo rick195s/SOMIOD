@@ -2,9 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing.Text;
+using System.IO;
 using System.Net;
 using System.Text;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Serialization;
 using uPLibrary.Networking.M2Mqtt;
 using uPLibrary.Networking.M2Mqtt.Messages;
 
@@ -163,9 +166,16 @@ namespace ApplicationA
         
         private void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {
+            XmlSerializer serializer = new XmlSerializer(typeof(Models.Data));
+
+            MemoryStream ms = new MemoryStream(e.Message);
+
+            Models.Data data = (Models.Data)serializer.Deserialize(ms);
+            ms.Close();
+
             listBoxReceivedMsg.BeginInvoke((MethodInvoker)delegate
             {
-                listBoxReceivedMsg.Items.Add("Received = " + Encoding.UTF8.GetString(e.Message) + " on topic " +
+                listBoxReceivedMsg.Items.Add("Received = " + data.Content + " event "+data.Event+" on topic " +
         e.Topic);
             });
 

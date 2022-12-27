@@ -14,11 +14,11 @@ namespace ApplicationA.Models
         public Data(Subscription_Data subscription_Data)
         {
             Id = subscription_Data.Id;
-            if (subscription_Data.Content != null)
+            if (subscription_Data.Content.FirstChild != null)
             {
                 Content = subscription_Data.Content.FirstChild.InnerXml;
                 Content = Content.Trim();
-                Content= Content.Replace("\n", "");
+                Content = Content.Replace("\n", "");
                 Content = Content.Replace(" ", "");
             }
             Creation_dt = subscription_Data.Creation_dt;
@@ -28,6 +28,10 @@ namespace ApplicationA.Models
 
         public int Id { get; set; }
         public string Content { get; set; } = "";
+
+        [XmlAttribute("event")]
+        public string Event { get; set; }
+
         public string Creation_dt { get; set; }
         public int Parent { get; set; }
         public string Res_type { get; set; } = "data";
