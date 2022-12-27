@@ -31,7 +31,7 @@ namespace SomiodAPI.Helpers
             }
 
             data.Event = subEvent;
-
+            data.Event = null;
             mClient.Publish(channelName, Encoding.UTF8.GetBytes(serializeObjectToXML(data)));
             try
             {
@@ -49,7 +49,7 @@ namespace SomiodAPI.Helpers
                             throw new Exception("Error connecting to message broker...");
                         }
 
-                        data.Event = subEvent;
+                        data.Event = null;
 
                         mClient.Publish(channelName, Encoding.UTF8.GetBytes(serializeObjectToXML(data)));
                     }
@@ -72,8 +72,10 @@ namespace SomiodAPI.Helpers
             serializer.Serialize(ms, obj);
             ms.Position = 0;
 
-            StreamReader r = new StreamReader(ms);
-            return r.ReadToEnd();
+            using (StreamReader r = new StreamReader(ms))
+            {
+                return r.ReadToEnd();
+            };
         }
     }
 }
