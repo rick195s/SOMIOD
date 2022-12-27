@@ -23,20 +23,12 @@ namespace SomiodAPI.Helpers
     
         public static int PublishData(IPAddress ipAddress, string subEvent, string channelName, Data data)
         {
-            MqttClient mClient = new MqttClient(ipAddress);
-            mClient.Connect(Guid.NewGuid().ToString());
-            if (!mClient.IsConnected)
-            {
-                throw new Exception("Error connecting to message broker...");
-            }
-
+            MqttClient mClient;
             data.Event = subEvent;
-            data.Event = null;
-            mClient.Publish(channelName, Encoding.UTF8.GetBytes(serializeObjectToXML(data)));
             try
             {
                 Module module = SqlModuleHelper.GetModule(channelName);
-                List<Subscription> subs = SqlSubscriptionHelper.GetSubscriptions(module.Id,data.Event);
+                List<Subscription> subs = SqlSubscriptionHelper.GetSubscriptions(module.Id, subEvent);
                 var endpoints = subs.GroupBy(s => s.Endpoint).Select(e => e.First());
                 foreach (var endpoint in endpoints)
                 {
@@ -58,9 +50,10 @@ namespace SomiodAPI.Helpers
             }
             catch (Exception)
             {
-
-                throw;
+                throw new Exception("Error connecting to message broker...");
             }
+
+            data.Event = null;
             return 0;
         }
 
