@@ -231,7 +231,7 @@ namespace SomiodAPI.SqlHelpers
 
             return subscription;
         }
-        public static List<Subscription> GetSubscriptions(int parent)
+        public static List<Subscription> GetSubscriptions(int parent,string event_data)
         {
             SqlConnection sqlConnection = null;
             try
@@ -240,8 +240,9 @@ namespace SomiodAPI.SqlHelpers
                 SqlCommand cmd = new SqlCommand();
                 SqlDataReader reader;
 
-                cmd.CommandText = "SELECT * FROM Subscription where Parent=@parent";
+                cmd.CommandText = "SELECT * FROM Subscription where Parent=@parent and Event=@event_data";
                 cmd.Parameters.AddWithValue("@parent", parent);
+                cmd.Parameters.AddWithValue("@event_data", event_data);
                 cmd.CommandType = CommandType.Text;
                 cmd.Connection = sqlConnection;
                 sqlConnection.Open();

@@ -36,7 +36,7 @@ namespace SomiodAPI.Helpers
             try
             {
                 Module module = SqlModuleHelper.GetModule(channelName);
-                List<Subscription> subs = SqlSubscriptionHelper.GetSubscriptions(module.Id);
+                List<Subscription> subs = SqlSubscriptionHelper.GetSubscriptions(module.Id,data.Event);
                 var endpoints = subs.GroupBy(s => s.Endpoint).Select(e => e.First());
                 foreach (var endpoint in endpoints)
                 {
