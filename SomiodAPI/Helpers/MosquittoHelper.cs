@@ -23,7 +23,7 @@ namespace SomiodAPI.Helpers
     
         public static int PublishData(IPAddress ipAddress, string subEvent, string channelName, Data data)
         {
-            /*MqttClient mClient = new MqttClient(ipAddress);
+            MqttClient mClient = new MqttClient(ipAddress);
             mClient.Connect(Guid.NewGuid().ToString());
             if (!mClient.IsConnected)
             {
@@ -32,7 +32,7 @@ namespace SomiodAPI.Helpers
 
             data.Event = subEvent;
 
-            mClient.Publish(channelName, Encoding.UTF8.GetBytes(serializeObjectToXML(data)));*/
+            mClient.Publish(channelName, Encoding.UTF8.GetBytes(serializeObjectToXML(data)));
             try
             {
                 Module module = SqlModuleHelper.GetModule(channelName);
@@ -40,16 +40,20 @@ namespace SomiodAPI.Helpers
                 var endpoints = subs.GroupBy(s => s.Endpoint).Select(e => e.First());
                 foreach (var endpoint in endpoints)
                 {
-                    MqttClient mClient = new MqttClient(endpoint.Endpoint);
-                    mClient.Connect(Guid.NewGuid().ToString());
-                    if (!mClient.IsConnected)
+                    if (IPAddress.TryParse(endpoint.Endpoint, out IPAddress ip))
                     {
-                        throw new Exception("Error connecting to message broker...");
+                        mClient = new MqttClient(endpoint.Endpoint);
+                        mClient.Connect(Guid.NewGuid().ToString());
+                        if (!mClient.IsConnected)
+                        {
+                            throw new Exception("Error connecting to message broker...");
+                        }
+
+                        data.Event = subEvent;
+
+                        mClient.Publish(channelName, Encoding.UTF8.GetBytes(serializeObjectToXML(data)));
                     }
-
-                    data.Event = subEvent;
-
-                    mClient.Publish(channelName, Encoding.UTF8.GetBytes(serializeObjectToXML(data)));
+                    else { return -1; }
                 }
             }
             catch (Exception)
