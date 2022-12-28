@@ -21,7 +21,7 @@ namespace SomiodAPI.Helpers
         // static MqttClient mClient = new MqttClient(Dns.GetHostAddresses("test.mosquitto.org")[0]);
         // static MqttClient mClient = new MqttClient(IPAddress.Parse("127.0.0.1")); 
     
-        public static int PublishData(IPAddress ipAddress, string subEvent, string channelName, Data data)
+        public static int PublishData(string subEvent, string channelName, Data data)
         {
             MqttClient mClient;
             data.Event = subEvent;

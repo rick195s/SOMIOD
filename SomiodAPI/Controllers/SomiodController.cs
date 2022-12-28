@@ -12,8 +12,6 @@ namespace SomiodAPI.Controllers
     [RoutePrefix("api/somiod")]
     public class SomiodController : ApiController
     {
-        string connectionString = SomiodAPI.Properties.Settings.Default.connStr;
-
         #region GET
         // GET: api/somiod/application
         [Route("applications")]
@@ -128,7 +126,7 @@ namespace SomiodAPI.Controllers
                     return InternalServerError();
                 }
 
-                MosquittoHelper.PublishData(IPAddress.Parse("127.0.0.1"), "creation", moduleName, data);
+                MosquittoHelper.PublishData("creation", moduleName, data);
                 return Ok(data);
             }
 
@@ -233,7 +231,7 @@ namespace SomiodAPI.Controllers
 
             string moduleName = SqlModuleHelper.GetModule(data.Parent).Name;
 
-            MosquittoHelper.PublishData(IPAddress.Parse("127.0.0.1"), "deletion", moduleName, data);
+            MosquittoHelper.PublishData("deletion", moduleName, data);
             return Ok(data);
         }
 
