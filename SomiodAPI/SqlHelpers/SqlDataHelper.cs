@@ -3,12 +3,6 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
 using System.Diagnostics;
-using System.Linq;
-using System.Web;
-using SomiodAPI.Models;
-using static System.Net.Mime.MediaTypeNames;
-using System.Xml;
-using System.Net.Configuration;
 
 namespace SomiodAPI.SqlHelpers
 {
@@ -54,9 +48,9 @@ namespace SomiodAPI.SqlHelpers
                 }
                 return null;
             }
-            catch
+            catch(Exception e)
             {
-                return null;
+                throw e;
             }
             finally
             {
@@ -196,14 +190,14 @@ namespace SomiodAPI.SqlHelpers
                 return null;
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 //fechar a ligação à BD
                 if (conn.State == System.Data.ConnectionState.Open)
                 {
                     conn.Close();
                 }
-                return null;
+                throw e;
             }
         }
 

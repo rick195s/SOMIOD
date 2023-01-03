@@ -1,19 +1,9 @@
-﻿using Newtonsoft.Json.Linq;
-using SomiodAPI;
-using SomiodAPI.SqlHelpers;
+﻿using SomiodAPI.SqlHelpers;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-using System.Text;
-using System.Web;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace SomiodAPI
 {
@@ -58,9 +48,9 @@ namespace SomiodAPI
 
                 return null;
             }
-            catch
+            catch(Exception e )
             {
-                return null;
+                throw e;
             }
             finally
             {
@@ -276,14 +266,14 @@ namespace SomiodAPI
                 return null;
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 //fechar a ligação à BD
                 if (conn.State == System.Data.ConnectionState.Open)
                 {
                     conn.Close();
                 }
-                return null;
+                throw e;
             }
         }
 
